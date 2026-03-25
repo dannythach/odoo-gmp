@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:17
+    container_name: postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: comi-odoo
+      POSTGRES_USER: metabase
+      POSTGRES_PASSWORD: secret123
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    networks:
+      - metabase_network
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: odoo-sys
+    restart: unless-stopped
+    ports:
+      - "8069:8069"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: danythach
+      DB_NAME: comi-odoo
+    volumes:
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - ./custom_addons:/mnt/extra-addons/custom_addons
+      - odoo-data:/var/lib/odoo
+    depends_on:
+      - db
+    networks:
+      - metabase_network
+
+volumes:
+  odoo-data:
+  db-data:
+
+networks:
+  metabase_network:
+    external: true

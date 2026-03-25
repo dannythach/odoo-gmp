@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree view -->
+    <record id="view_gmp_oitm_tree" model="ir.ui.view">
+        <field name="name">gmp.oitm.tree</field>
+        <field name="model">gmp.oitm</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="itemcode"/>
+                <field name="itemname"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_gmp_oitm_search" model="ir.ui.view">
+        <field name="name">gmp.oitm.search</field>
+        <field name="model">gmp.oitm</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm Nguyên phụ liệu">
+                <field name="itemcode" string="Mã NPL"/>
+                <field name="itemname" string="Tên NPL"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>

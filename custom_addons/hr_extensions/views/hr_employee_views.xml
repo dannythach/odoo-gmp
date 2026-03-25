@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <record id="hr_employee_view_form_extension" model="ir.ui.view">
+            <field name="name">hr.employee.view.form.extension</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='identification_id']" position="after">
+                    <field name="PIT_Code"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="hr_employee_view_tree_extension" model="ir.ui.view">
+            <field name="name">hr.employee.view.tree.extension</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_tree"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='work_email']" position="after">
+                    <field name="PIT_Code"/>
+                </xpath>
+            </field>
+        </record>
+        
+        <record id="view_employee_form_inherit_giamtru" model="ir.ui.view">
+            <field name="name">hr.employee.form.inherit.giamtru</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+
+            <!-- Chèn sau tab "Thông tin công việc" -->
+            <xpath expr="//page[@name='personal_information']" position="after">
+                <page string="Giảm trừ gia cảnh" name="giamtru_giacanh">
+                    <group>
+                        <field name="dependent_count"/>
+                        <field name="dependent_name"/>
+                        <field name="dependent_note"/>
+                    </group>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+
+    </data>
+</odoo>

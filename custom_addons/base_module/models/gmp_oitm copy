@@ -1,0 +1,55 @@
+from odoo import models, fields, api
+from odoo.osv import expression
+
+class gmpoitm(models.Model):
+    _name = "gmp.oitm"
+    _description = "Item master data"
+    _rec_name = "itemcode"
+    _order = "id desc"
+    _sql_constraints = [
+        ('itemcode_unique', 'unique(itemcode)', 'Mã NPL phải là duy nhất!')
+    ]
+
+    #ID = fields.Integer()
+    itemcode = fields.Char(string="Mã NPL", required=True)
+    itemname = fields.Char(string="Tên NPL", required=True)
+    frgnname = fields.Char(string="Tên nước ngoài")
+    itmsgrpcod = fields.Integer(string="Nhóm hàng")
+    iuomcode = fields.Char(string="ĐVT tồn kho (code)")
+    iuomname = fields.Char(string="ĐVT tồn kho (name)")
+    createdate = fields.Datetime(string="Ngày tạo")
+    updatedate = fields.Datetime(string="Ngày cập nhật")
+    updatets = fields.Integer(string="Mã thời gian cập nhật")
+
+    @api.depends('itemcode', 'itemname', 'iuomname', 'iuomcode')
+    def _compute_display_name(self):
+        for rec in self:
+            name = f"[{rec.itemcode}] {rec.itemname or ''}"
+            uom = rec.iuomname or rec.iuomcode
+            if uom:
+                name += f" ({uom})"
+            rec.display_name = name
+    
+    @api.model
+    def name_search(self, name='', args=None, operator='ilike', limit=100):
+        args = args or []
+
+        if name:
+            domain = expression.OR([
+                [('itemcode', operator, name)],
+                [('itemname', operator, name)]
+            ])
+            args = expression.AND([domain, args])
+
+        records = self.search(args, limit=limit)
+        return [(record.id, record.display_name) for record in records]
+    
+    def name_get(self):
+    result = []
+    for rec in self:
+        name = f"[{rec.itemcode}] {rec.itemname or ''}"
+        uom = rec.iuomname or rec.iuomcode
+        if uom:
+            name += f" ({uom})"
+        result.append((rec.id, name))
+    return result

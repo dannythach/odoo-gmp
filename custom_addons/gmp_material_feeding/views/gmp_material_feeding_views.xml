@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Action -->
+    <record id="action_gmp_material_feeding" model="ir.actions.act_window">
+        <field name="name">Cấp / nạp liệu chế biến</field>
+        <field name="res_model">gmp.material.feeding</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu -->
+    <!-- <menuitem id="menu_noodle_production_log_root" name="Nhật ký sản xuất mì" sequence="10"/> -->
+    <menuitem
+        id="menu_gmp_material_feeding"
+        name="Cấp / nạp liệu chế biến"
+        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
+        action="action_gmp_material_feeding"
+        sequence="10"
+    />
+
+    <!-- Tree view -->
+    <record id="view_gmp_material_feeding_tree" model="ir.ui.view">
+        <field name="name">gmp.material.feeding.tree</field>
+        <field name="model">gmp.material.feeding</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="log_datetime"/>
+                <field name="productionplan_id"/>
+                <field name="productionplancode"/>
+                <field name="productionplanname"/>
+                <field name="productionplanfactory"/>
+                <field name="item_id"/>
+                <field name="itemcode"/>
+                <field name="itemname"/>
+                <!-- <field name="lot_code"/>
+                <field name="batch_code"/> -->
+                <field name="uom_id"/>
+                <field name="uomcode"/>
+                <field name="uomname"/>
+                <field name="bom_quantity"/>
+                <field name="actual_quantity"/>
+                <field name="quantity_variance"/>
+                <field name="cip"/>
+                <field name="cop"/>
+                <field name="plan_quantity_status"/>
+                <field name="bom_quantity_status"/>
+                <field name="order_quantity_status"/>
+                <field name="cleanliness_status"/>
+                <field name="operating_status"/>
+                <field name="cross_contamination"/>
+                <field name="final_result"/>
+                <field name="operator"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_gmp_material_feeding_form" model="ir.ui.view">
+        <field name="name">gmp.material.feeding.form</field>
+        <field name="model">gmp.material.feeding</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="log_datetime"/>
+                        <field name="productionplan_id" options="{'no_open': True}"/>
+                        <field name="productionplancode"/>  
+                        <field name="productionplanname"/>
+                        <field name="productionplanfactory"/>
+                        <field name="item_id" options="{'no_open': True}"/>
+                        <field name="itemcode"/>
+                        <field name="itemname"/>                        
+                        <!-- <field name="lot_code"/>
+                        <field name="batch_code"/> -->
+                        <field name="uom_id" options="{'no_open': True}"/>
+                        <field name="uomcode"/>
+                        <field name="uomname"/>                     
+                    </group>
+
+                    <group string="Cấp/nạp liệu chế biến">
+                        <field name="bom_quantity"/>
+                        <field name="actual_quantity"/>
+                        <field name="quantity_variance"/>
+                    </group>
+
+                    <group string="Thiết bị, công cụ, dụng cụ">
+                        <field name="cip"/>
+                        <field name="cop"/>
+                    </group>
+
+                    <group string="Cấp liệu theo">
+                        <field name="plan_quantity_status"/>
+                        <field name="bom_quantity_status"/>
+                        <field name="order_quantity_status"/>
+                    </group>
+
+                    <group string="Khu vực và thao tác cấp liệu">
+                        <field name="cleanliness_status"/>
+                        <field name="operating_status"/>
+                        <field name="cross_contamination"/>
+                    </group>
+
+                    <group>
+                        <field name="final_result"/>
+                        <field name="operator"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+</odoo>

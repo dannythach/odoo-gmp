@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+
+    <!-- Tree view -->
+    <record id="view_gmp_ouom_tree" model="ir.ui.view">
+        <field name="name">gmp.ouom.tree</field>
+        <field name="model">gmp.ouom</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="uomcode"/>
+                <field name="uomname"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Search view -->
+    <record id="view_gmp_ouom_search" model="ir.ui.view">
+        <field name="name">gmp.ouom.search</field>
+        <field name="model">gmp.ouom</field>
+        <field name="arch" type="xml">
+            <search string="Tìm kiếm Đơn vị tính">
+                <field name="uomcode" string="Mã ĐVT"/>
+                <field name="uomname" string="Tên ĐVT"/>
+            </search>
+        </field>
+    </record>
+
+</odoo>
