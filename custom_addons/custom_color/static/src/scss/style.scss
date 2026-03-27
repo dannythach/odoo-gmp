@@ -1,0 +1,83 @@
+/* 1. ĐỊNH NGHĨA BIẾN MÀU CHỦ ĐẠO - DÙNG CHO TOÀN HỆ THỐNG */
+:root {
+    --o-brand-odoo: #4caf50 !important;
+    --o-brand-primary: #4caf50 !important;
+    --o-navbar-background-color: #4caf50 !important;
+    --o-action-active-color: #4caf50 !important;
+}
+
+/* 2. THANH NAVBAR: GIỮ MÀU XANH TĨNH & CẢ KHI DI CHUỘT */
+.o_main_navbar {
+    background-color: #4caf50 !important;
+    
+    /* Màu chữ và nền các menu con */
+    .o_menu_brand, 
+    .o_nav_entry, 
+    .o_menu_sections .dropdown-toggle,
+    .o_menu_systray .dropdown-toggle {
+        background-color: #4caf50 !important;
+        color: white !important;
+
+        /* HIỆU ỨNG KHI DI CHUỘT VÀO (HOVER) */
+        &:hover {
+            background-color: #388e3c !important; /* Xanh đậm hơn khi di chuột */
+        }
+        
+        /* KHI MENU ĐANG ĐƯỢC CHỌN (ACTIVE) */
+        &.active {
+            background-color: #2e7d32 !important;
+        }
+    }
+}
+
+/* 3. CÁC NÚT BẤM CHÍNH (KÍCH HOẠT, NÂNG CẤP) */
+.btn-primary {
+    background-color: #4caf50 !important;
+    border-color: #4caf50 !important;
+    
+    &:hover {
+        background-color: #388e3c !important;
+        border-color: #388e3c !important;
+    }
+}
+
+/* 4. CÁC BIỂU TƯỢNG (FOLDER, VIEW SWITCHER) */
+.o_apps .o_left_panel .oi-folder-fill, 
+.o_apps .o_left_panel .fa-folder,
+.o_cp_switch_buttons .btn.active {
+    color: #4caf50 !important;
+}
+
+/* 5. Đổi màu cho các nút Outline (như nút 'Mới') */
+.btn-outline-primary {
+    color: #4caf50 !important;          /* Màu chữ và viền */
+    border-color: #4caf50 !important;
+    
+    &:hover {
+        background-color: #4caf50 !important; /* Đổ nền xanh khi di chuột vào */
+        color: white !important;
+        border-color: #4caf50 !important;
+    }
+}
+
+/* 5. Đảm bảo các nút trong Form (o_form_button_create) cũng xanh nốt */
+.o_form_button_create, .o_form_button_save {
+    color: #4caf50 !important;
+    border-color: #4caf50 !important;
+    
+    &:hover {
+        background-color: #388e3c !important;
+        color: white !important;
+    }
+}
+
+/* Đổi màu thanh kẻ dọc khi di chuột để kéo giãn cột */
+.o_list_renderer .o_list_table th .o_resize:hover {
+    background-color: #4caf50 !important; /* Màu xanh chủ đạo */
+    opacity: 0.5 !important;               /* Độ trong suốt nhẹ khi hover */
+}
+
+/* Đảm bảo đường kẻ khi đang thực hiện kéo giãn cũng màu xanh */
+.o_list_renderer .o_list_table th .o_resize.active {
+    background-color: #2e7d32 !important;
+}

@@ -1,22 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <!-- Action -->
-    <record id="action_gmp_material_mixing" model="ir.actions.act_window">
-        <field name="name">Nhào trộn NPL</field>
-        <field name="res_model">gmp.material.mixing</field>
-        <field name="view_mode">tree,form</field>
-    </record>
-
-    <!-- Menu -->
-    <menuitem
-        id="menu_gmp_material_mixing"
-        name="Nhào trộn NPL"
-        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_material_mixing"
-        sequence="10"
-    />
-
     <!-- Tree view -->
     <record id="view_gmp_material_mixing_tree" model="ir.ui.view">
         <field name="name">gmp.material.mixing.tree</field>
@@ -56,7 +39,7 @@
                 <sheet>
                     <group>
                         <field name="log_datetime"/>
-                        <field name="productionplan_id" options="{'no_open': True}"/>
+                        <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
                         <field name="productionplanfactory"/>
@@ -83,5 +66,30 @@
             </form>
         </field>
     </record>
+
+    <!-- Action -->
+    <record id="action_gmp_material_mixing" model="ir.actions.act_window">
+        <field name="name">Nhào trộn NPL</field>
+        <field name="res_model">gmp.material.mixing</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Action Create -->
+    <record id="action_gmp_material_mixing_create" model="ir.actions.act_window">
+        <field name="name">Nhào trộn NPL (Create)</field>
+        <field name="res_model">gmp.material.mixing</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_qr_search_num': active_id}</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_gmp_material_mixing"
+        name="Nhào trộn NPL"
+        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
+        action="action_gmp_material_mixing"
+        sequence="10"
+    />
+
 
 </odoo>

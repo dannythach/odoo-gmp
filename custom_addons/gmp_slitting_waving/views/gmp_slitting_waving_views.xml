@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_gmp_slitting_waving_tree" model="ir.ui.view">
+        <field name="name">gmp.slitting.waving.tree</field>
+        <field name="model">gmp.slitting.waving</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="log_datetime"/>
+                <field name="productionplan_id"/>
+                <field name="productionplancode"/>
+                <field name="productionplanname"/>
+                <field name="productionplanfactory"/>
+                <field name="lot_code"/>
+                <field name="batch_code"/>
+                <field name="slitter_id"/>
+                <field name="noodle_diameter"/>
+                <field name="slitter_speed"/>
+                <field name="noodle_speed"/>
+                <field name="noodle_density"/>
+                <field name="noodle_surface"/>
+                <field name="wave_amplitude"/>               
+                <field name="result"/>
+                <field name="operator"/>
+                <field name="note"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_gmp_slitting_waving_form" model="ir.ui.view">
+        <field name="name">gmp.slitting.waving.form</field>
+        <field name="model">gmp.slitting.waving</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="log_datetime"/>
+                        <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
+                        <field name="productionplancode"/>  
+                        <field name="productionplanname"/>
+                        <field name="productionplanfactory"/>                                              
+                        <field name="lot_code"/>
+                        <field name="batch_code"/>
+                    </group>
+
+                    <group>   
+                        <field name="slitter_id"/>
+                        <field name="noodle_diameter"/>
+                        <field name="slitter_speed"/>
+                        <field name="noodle_speed"/>
+                        <field name="noodle_density"/>
+                        <field name="noodle_surface"/>
+                        <field name="wave_amplitude"/>    
+                    </group>
+
+                    <group>
+                        <field name="result"/>
+                        <field name="operator"/>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_gmp_slitting_waving" model="ir.actions.act_window">
+        <field name="name">Cắt sợi và tạo sóng</field>
+        <field name="res_model">gmp.slitting.waving</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Action Create -->
+    <record id="action_gmp_slitting_waving_create" model="ir.actions.act_window">
+        <field name="name">Cắt sợi và tạo sóng (Create)</field>
+        <field name="res_model">gmp.slitting.waving</field>
+        <field name="view_mode">form</field>
+        <field name="context">{'default_qr_search_num': active_id}</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_gmp_slitting_waving"
+        name="Cắt sợi và tạo sóng"
+        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
+        action="action_gmp_slitting_waving"
+        sequence="10"
+    />
+
+</odoo>

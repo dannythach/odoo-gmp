@@ -4,6 +4,7 @@ class gmpmaterialmixing(models.Model):
     _name = "gmp.material.mixing"
     _description = "Nhào trộn NPL"
     _order = "log_datetime desc"
+    _rec_name = 'note'
 
     log_datetime = fields.Datetime(
         string="Thời gian",
@@ -20,11 +21,13 @@ class gmpmaterialmixing(models.Model):
     )
     productionplancode = fields.Integer(
         related="productionplan_id.docnum",
+        string="Kế hoạch sản xuất",
         store=True,
         readonly=True
     )
     productionplanname = fields.Char(
         related="productionplan_id.remark",
+        string="Ghi chú",
         store=True,
         readonly=True
     )
@@ -97,6 +100,8 @@ class gmpmaterialmixing(models.Model):
         default=lambda self: self.env.user
     )
     note = fields.Text(string="Ghi chú")
+    # Trong model gmp.material.mixing
+    search_docnum = fields.Char(string="Search DocNum")
 
     # --- CÁC HÀM XỬ LÝ LOGIC ---
 
@@ -119,3 +124,13 @@ class gmpmaterialmixing(models.Model):
             uom = self.env['gmp.ouom'].search([('uomcode', '=', self.item_id.iuomcode)], limit=1)
             if uom:
                 self.uom_id = uom
+    
+    @api.onchange('search_docnum')
+    def _onchange_search_docnum(self):
+        if self.search_docnum:
+            # Tự đi tìm ID thực từ số DocNum người dùng nhập
+            plan = self.env['base.daily.production.plan'].search([
+                ('docnum', '=', int(self.search_docnum))
+            ], limit=1)
+            if plan:
+                self.productionplan_id = plan.id

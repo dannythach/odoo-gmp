@@ -4,6 +4,7 @@ class gmpweighingmonitoring(models.Model):
     _name = "gmp.weighing.monitoring"
     _description = "Chuẩn bị và cân định lượng NPL"
     _order = "log_datetime desc"
+    _rec_name = 'note'
 
     log_datetime = fields.Datetime(
         string="Thời gian",
@@ -20,12 +21,14 @@ class gmpweighingmonitoring(models.Model):
     )
     productionplancode = fields.Integer(
         related="productionplan_id.docnum",
+        string="Kế hoạch sản xuất",
         store=True,
         readonly=True
     )
     productionplanname = fields.Char(
         related="productionplan_id.remark",
         store=True,
+        string="Ghi chú",
         readonly=True
     )
     # Sửa lại trường này, bỏ related Char cũ

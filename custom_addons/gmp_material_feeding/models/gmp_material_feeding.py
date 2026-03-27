@@ -4,6 +4,7 @@ class gmpmaterialfeeding(models.Model):
     _name = "gmp.material.feeding"
     _description = "Cấp / nạp liệu chế biến"
     _order = "log_datetime desc"
+    _rec_name = 'note'
 
     log_datetime = fields.Datetime(
         string="Thời gian",
@@ -21,10 +22,12 @@ class gmpmaterialfeeding(models.Model):
     productionplancode = fields.Integer(
         related="productionplan_id.docnum",
         store=True,
+        string="Kế hoạch sản xuất",
         readonly=True
     )
     productionplanname = fields.Char(
         related="productionplan_id.remark",
+        string="Ghi chú",
         store=True,
         readonly=True
     )

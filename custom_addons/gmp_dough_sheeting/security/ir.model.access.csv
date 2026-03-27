@@ -1,0 +1,2 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gmp_dough_sheeting,gmp.dough_sheeting,model_gmp_dough_sheeting,base.group_user,1,1,1,1
