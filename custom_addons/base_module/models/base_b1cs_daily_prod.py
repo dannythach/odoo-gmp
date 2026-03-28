@@ -26,6 +26,7 @@ class DailyProductionPlan(models.Model):
     u_fromwhs = fields.Char(string="From Warehouse", size=20)
     u_towhs = fields.Char(string="To Warehouse", size=20)
 
+
     # Link QR để quét - Sử dụng record.id (ID thực như 2611)
     mixing_qr_link = fields.Char(string="Link QR Nhào trộn", compute="_compute_mixing_qr_link")
 

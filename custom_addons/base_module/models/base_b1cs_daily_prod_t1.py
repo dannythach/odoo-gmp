@@ -31,5 +31,7 @@ class DailyProductionPlanDetail(models.Model):
     u_productiontype = fields.Char(string="Production Type", size=1)
     u_machines = fields.Char(string="Machines", size=50)
     updatedate = fields.Datetime(string="Update Date")
+    u_fromts = fields.Integer(string="From TS")
+    u_tots = fields.Integer(string="To TS")
 
 

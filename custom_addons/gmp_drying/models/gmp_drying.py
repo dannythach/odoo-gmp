@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class gmpdoughsheeting(models.Model):
-    _name = "gmp.dough.sheeting"
-    _description = "Cán bột"
+class gmpdrying(models.Model):
+    _name = "gmp.drying"
+    _description = "Quạt ráo"
     _order = "log_datetime desc"
     _rec_name = 'note'
 
@@ -44,7 +44,6 @@ class gmpdoughsheeting(models.Model):
         store=True,
         readonly=True
     )
-
     # Thành phẩm
     item_id = fields.Many2one(
         comodel_name="gmp.oitm",
@@ -79,16 +78,12 @@ class gmpdoughsheeting(models.Model):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
 
-    # Cán thô
-    rough_roller_id = fields.Char(string="Mã số trục cán thô")
-    rough_speed = fields.Float(string="Vận tốc cán thô (v/p)")
-    rough_thickness = fields.Float(string="Độ dày lá bột cán thô (mm)")
-
-    # Cán thô
-    final_roller_id = fields.Char(string="Mã số trục cán tinh")
-    final_speed = fields.Float(string="Vận tốc cán tinh (v/p)")
-    final_thickness = fields.Float(string="Độ dày lá bột cán tinh (mm)")
-    final_status = fields.Char(string="Trạng thái tấm/lá bột sau cán tinh")
+    drying_time = fields.Float(string="Thời gian quạt (p/s)")
+    blowing_speed = fields.Float(string="Tốc độ quạt/ Vận tốc thổi (m/p)")
+    air_tempature = fields.Float(string="Nhiệt độ không khí (C)")
+    airflow_rate = fields.Float(string="Lưu lượng không khí (m3/kg)")
+    equipment_status = fields.Char(string="Tình trạng thiết bị quạt")
+    wip_status = fields.Char(string="Tình trạng bề mặt bán thành phẩm")
     
     result = fields.Selection(
         [
@@ -148,7 +143,7 @@ class gmpdoughsheeting(models.Model):
             ])
 
             record.allowed_item_ids = items
-    
+
     # CÁC HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU     
     @api.onchange('item_id','material_id', 'productionplan_id')
     def _onchange_load_data(self):
@@ -169,8 +164,8 @@ class gmpdoughsheeting(models.Model):
                 self.tots = 0
         else:
             self.fromts = 0
-            self.tots = 0
-            
+            self.tots = 0         
+   
     # @api.onchange('search_docnum')
     # def _onchange_search_docnum(self):
     #     """Tìm kế hoạch sản xuất dựa trên số DocNum nhập vào"""

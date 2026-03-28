@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class gmpdoughsheeting(models.Model):
-    _name = "gmp.dough.sheeting"
-    _description = "Cán bột"
+class gmpcutting(models.Model):
+    _name = "gmp.cutting"
+    _description = "Hấp"
     _order = "log_datetime desc"
     _rec_name = 'note'
 
@@ -79,16 +79,12 @@ class gmpdoughsheeting(models.Model):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
 
-    # Cán thô
-    rough_roller_id = fields.Char(string="Mã số trục cán thô")
-    rough_speed = fields.Float(string="Vận tốc cán thô (v/p)")
-    rough_thickness = fields.Float(string="Độ dày lá bột cán thô (mm)")
-
-    # Cán thô
-    final_roller_id = fields.Char(string="Mã số trục cán tinh")
-    final_speed = fields.Float(string="Vận tốc cán tinh (v/p)")
-    final_thickness = fields.Float(string="Độ dày lá bột cán tinh (mm)")
-    final_status = fields.Char(string="Trạng thái tấm/lá bột sau cán tinh")
+    noodle_length = fields.Float(string="Chiều dài sợi mì (cm)")
+    standard_weight = fields.Float(string="KL/TL quy định (g)")
+    actual_weight = fields.Float(string="KL/ TL đo (g)")
+    cutting_speed = fields.Float(string="Tốc độ dao cắt (lần/p)")
+    conveyor_speed = fields.Char(string="Vận tốc băng tải")
+    post_cutting_status = fields.Float(string="Tình trạng vắt mì sau cắt định lượng")
     
     result = fields.Selection(
         [
@@ -148,7 +144,7 @@ class gmpdoughsheeting(models.Model):
             ])
 
             record.allowed_item_ids = items
-    
+   
     # CÁC HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU     
     @api.onchange('item_id','material_id', 'productionplan_id')
     def _onchange_load_data(self):
@@ -169,8 +165,8 @@ class gmpdoughsheeting(models.Model):
                 self.tots = 0
         else:
             self.fromts = 0
-            self.tots = 0
-            
+            self.tots = 0 
+
     # @api.onchange('search_docnum')
     # def _onchange_search_docnum(self):
     #     """Tìm kế hoạch sản xuất dựa trên số DocNum nhập vào"""

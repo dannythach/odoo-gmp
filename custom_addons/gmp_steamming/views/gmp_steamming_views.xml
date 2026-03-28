@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Tree view -->
-    <record id="view_gmp_dough_sheeting_tree" model="ir.ui.view">
-        <field name="name">gmp.dough.sheeting.tree</field>
-        <field name="model">gmp.dough.sheeting</field>
+    <record id="view_gmp_steamming_tree" model="ir.ui.view">
+        <field name="name">gmp.steamming.tree</field>
+        <field name="model">gmp.steamming</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
@@ -18,13 +18,13 @@
                 <field name="tots"/>
                 <field name="lot_code"/>
                 <field name="batch_code"/>
-                <field name="rough_roller_id"/>
-                <field name="rough_speed"/>
-                <field name="rough_thickness"/>
-                <field name="final_roller_id"/>
-                <field name="final_speed"/>
-                <field name="final_thickness"/>
-                <field name="final_status"/>               
+                <field name="tempature"/>
+                <field name="steamming_time"/>
+                <field name="vapor_pressurer"/>
+                <field name="chamber_pressuer"/>
+                <field name="gelatinization"/>
+                <field name="moisture"/>
+                <field name="wip_status"/>               
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
@@ -34,9 +34,9 @@
     </record>
 
     <!-- Form view -->
-    <record id="view_gmp_dough_sheeting_form" model="ir.ui.view">
-        <field name="name">gmp.dough.sheeting.form</field>
-        <field name="model">gmp.dough.sheeting</field>
+    <record id="view_gmp_steamming_form" model="ir.ui.view">
+        <field name="name">gmp.steamming.form</field>
+        <field name="model">gmp.steamming</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -45,27 +45,24 @@
                         <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
-                        <field name="productionplanfactory"/>     
+                        <field name="productionplanfactory"/>  
                         <field name="item_id"/>
                         <field name="itemcode"/>
                         <field name="itemname"/>
                         <field name="fromts"/>
-                        <field name="tots"/>                                         
+                        <field name="tots"/>                                            
                         <field name="lot_code"/>
                         <field name="batch_code"/>
                     </group>
 
-                    <group string="Cán thô">   
-                        <field name="rough_roller_id"/>
-                        <field name="rough_speed"/>
-                        <field name="rough_thickness"/>
-                    </group>
-
-                    <group string="Cán tinh">   
-                        <field name="final_roller_id"/>
-                        <field name="final_speed"/>
-                        <field name="final_thickness"/>
-                        <field name="final_status"/>  
+                    <group>   
+                        <field name="tempature"/>
+                        <field name="steamming_time"/>
+                        <field name="vapor_pressurer"/>
+                        <field name="chamber_pressuer"/>
+                        <field name="gelatinization"/>
+                        <field name="moisture"/>
+                        <field name="wip_status"/>     
                     </group>
 
                     <group>
@@ -80,28 +77,27 @@
     </record>
 
     <!-- Action -->
-    <record id="action_gmp_dough_sheeting" model="ir.actions.act_window">
-        <field name="name">Cán bột</field>
-        <field name="res_model">gmp.dough.sheeting</field>
+    <record id="action_gmp_steamming" model="ir.actions.act_window">
+        <field name="name">Hấp</field>
+        <field name="res_model">gmp.steamming</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Action Create -->
-    <record id="action_gmp_dough_sheeting_create" model="ir.actions.act_window">
-        <field name="name">Cán bột (Create)</field>
-        <field name="res_model">gmp.dough.sheeting</field>
+    <record id="action_gmp_steamming_create" model="ir.actions.act_window">
+        <field name="name">Hấp (Create)</field>
+        <field name="res_model">gmp.steamming</field>
         <field name="view_mode">form</field>
         <field name="context">{'default_qr_search_num': active_id}</field>
     </record>
 
     <!-- Menu -->
     <menuitem
-        id="menu_gmp_dough_sheeting"
-        name="Cán bột"
+        id="menu_gmp_steamming"
+        name="Hấp"
         parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_dough_sheeting"
+        action="action_gmp_steamming"
         sequence="10"
     />
-
 
 </odoo>

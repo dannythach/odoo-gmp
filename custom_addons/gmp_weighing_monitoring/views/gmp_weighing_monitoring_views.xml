@@ -32,6 +32,11 @@
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
+                <field name="material_id"/>
+                <field name="materialcode"/>
+                <field name="materialname"/>
                 <field name="lot_code"/>
                 <field name="batch_code"/>
                 <field name="uom_id"/>
@@ -45,6 +50,8 @@
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
+                <field name="allowed_item_ids" invisible="1"/>
+                <field name="allowed_material_ids" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -64,12 +71,17 @@
                         <field name="productionplanfactory"/>
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
-                        <field name="itemname"/>                        
-                        <field name="lot_code"/>
-                        <field name="batch_code"/>
+                        <field name="itemname"/> 
+                        <field name="fromts"/>
+                        <field name="tots"/> 
+                        <field name="material_id"/>
+                        <field name="materialcode"/>
+                        <field name="materialname"/>  
                         <field name="uom_id" options="{'no_open': True}"/>
                         <field name="uomcode"/>
-                        <field name="uomname"/>
+                        <field name="uomname"/>                    
+                        <field name="lot_code"/>
+                        <field name="batch_code"/>
                     </group>
 
                     <group string="Cân định lượng">
@@ -87,6 +99,8 @@
                         <field name="result"/>
                         <field name="operator"/>
                         <field name="note"/>
+                        <field name="allowed_item_ids" invisible="1"/>
+                        <field name="allowed_material_ids" invisible="1"/>
                     </group>
                 </sheet>
             </form>

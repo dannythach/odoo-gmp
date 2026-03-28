@@ -32,11 +32,11 @@
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
-                <!-- <field name="lot_code"/>
-                <field name="batch_code"/> -->
-                <field name="uom_id"/>
-                <field name="uomcode"/>
-                <field name="uomname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
+                <field name="material_id"/>
+                <field name="materialcode"/>
+                <field name="materialname"/>
                 <field name="bom_quantity"/>
                 <field name="actual_quantity"/>
                 <field name="quantity_variance"/>
@@ -51,6 +51,8 @@
                 <field name="final_result"/>
                 <field name="operator"/>
                 <field name="note"/>
+                <field name="allowed_item_ids" invisible="1"/>
+                <field name="allowed_material_ids" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -71,8 +73,11 @@
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
                         <field name="itemname"/>                        
-                        <!-- <field name="lot_code"/>
-                        <field name="batch_code"/> -->
+                        <field name="fromts"/>
+                        <field name="tots"/>
+                        <field name="material_id"/>
+                        <field name="materialcode"/>
+                        <field name="materialname"/>
                         <field name="uom_id" options="{'no_open': True}"/>
                         <field name="uomcode"/>
                         <field name="uomname"/>                     
@@ -105,6 +110,8 @@
                         <field name="final_result"/>
                         <field name="operator"/>
                         <field name="note"/>
+                        <field name="allowed_item_ids" invisible="1"/>
+                        <field name="allowed_material_ids" invisible="1"/>
                     </group>
                 </sheet>
             </form>

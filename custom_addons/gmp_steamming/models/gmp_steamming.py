@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class gmpdoughsheeting(models.Model):
-    _name = "gmp.dough.sheeting"
-    _description = "Cán bột"
+class gmpsteamming(models.Model):
+    _name = "gmp.steamming"
+    _description = "Hấp"
     _order = "log_datetime desc"
     _rec_name = 'note'
 
@@ -79,16 +79,13 @@ class gmpdoughsheeting(models.Model):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
 
-    # Cán thô
-    rough_roller_id = fields.Char(string="Mã số trục cán thô")
-    rough_speed = fields.Float(string="Vận tốc cán thô (v/p)")
-    rough_thickness = fields.Float(string="Độ dày lá bột cán thô (mm)")
-
-    # Cán thô
-    final_roller_id = fields.Char(string="Mã số trục cán tinh")
-    final_speed = fields.Float(string="Vận tốc cán tinh (v/p)")
-    final_thickness = fields.Float(string="Độ dày lá bột cán tinh (mm)")
-    final_status = fields.Char(string="Trạng thái tấm/lá bột sau cán tinh")
+    tempature = fields.Float(string="Nhiệt độ (C)")
+    steamming_time = fields.Float(string="Thời gian hấp (p/s)")
+    vapor_pressurer = fields.Float(string="Áp suất hơi (bar)")
+    chamber_pressuer = fields.Float(string="Áp suất buồng hấp (kgf/cm2)")
+    gelatinization = fields.Float(string="Độ hồ hóa tinh bột (%)")
+    moisture = fields.Float(string="Độ ẩm mì sau hấp (%)")
+    wip_status = fields.Char(string="Tình trạng bán thành phẩm")
     
     result = fields.Selection(
         [
@@ -149,7 +146,7 @@ class gmpdoughsheeting(models.Model):
 
             record.allowed_item_ids = items
     
-    # CÁC HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU     
+    # CÁC HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU  
     @api.onchange('item_id','material_id', 'productionplan_id')
     def _onchange_load_data(self):
         # 1. LOAD FROMTS, TOTS TỪ THÀNH PHẨM (ITEM_ID) ---
@@ -173,6 +170,7 @@ class gmpdoughsheeting(models.Model):
             
     # @api.onchange('search_docnum')
     # def _onchange_search_docnum(self):
+        
     #     """Tìm kế hoạch sản xuất dựa trên số DocNum nhập vào"""
     #     if self.search_docnum:
     #         try:

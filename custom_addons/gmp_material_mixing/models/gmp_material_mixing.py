@@ -46,10 +46,12 @@ class gmpmaterialmixing(models.Model):
         readonly=True
     )
 
+    # Thành phẩm
     item_id = fields.Many2one(
         comodel_name="gmp.oitm",
         string="Nguyên phụ liệu",
-        required=True
+        required=True,
+        domain="[('id', 'in', allowed_item_ids)]"
     )
     itemcode = fields.Char(
         related="item_id.itemcode",
@@ -61,23 +63,20 @@ class gmpmaterialmixing(models.Model):
         store=True,
         readonly=True
     )
+    fromts = fields.Integer(
+        string="Từ TS",
+        readonly=True,
+        help="Lấy từ dòng đầu tiên của kế hoạch sản xuất tương ứng với thành phẩm"
+    )
+    tots = fields.Integer(
+        string="Đến TS",
+        readonly=True,
+        help="Lấy từ dòng đầu tiên của kế hoạch sản xuất tương ứng với thành phẩm"
+    )
+
+    # Lô, mẻ
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
-    uom_id = fields.Many2one(
-        comodel_name="gmp.ouom",
-        string="Đơn vị tính",
-        required=True
-    )
-    uomcode = fields.Char(
-        related="uom_id.uomcode",
-        store=True,
-        readonly=True
-    )
-    uomname = fields.Char(
-        related="uom_id.uomname",
-        store=True,
-        readonly=True
-    )
 
     equipment_code = fields.Char(string="Mã số thiết bị")
     mixing_time = fields.Float(string="Thời gian nhào trộn (phút)")
@@ -100,11 +99,18 @@ class gmpmaterialmixing(models.Model):
         default=lambda self: self.env.user
     )
     note = fields.Text(string="Ghi chú")
+
     # Trong model gmp.material.mixing
     search_docnum = fields.Char(string="Search DocNum")
 
-    # --- CÁC HÀM XỬ LÝ LOGIC ---
+    # tạo field tạm chứa allowed items
+    allowed_item_ids = fields.Many2many(
+        'gmp.oitm',
+        compute='_compute_allowed_items',
+        store=False
+    )
 
+    # --- CÁC HÀM XỬ LÝ LOGIC ---
     @api.depends('productionplan_id')
     def _compute_productionplanfactory(self):
         for record in self:
@@ -113,17 +119,52 @@ class gmpmaterialmixing(models.Model):
             else:
                 record.productionplanfactory = False
 
+    # compute
+    # item_id
+    @api.depends('productionplan_id')
+    def _compute_allowed_items(self):
+        for record in self:
+            if not record.productionplan_id:
+                record.allowed_item_ids = [(5, 0, 0)]
+                continue
+
+            plan_details = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', record.productionplan_id.docentry)
+            ])
+
+            codes = list(set([
+                str(code).strip()
+                for code in plan_details.mapped('u_itemcode')
+                if code
+            ]))
+
+            items = self.env['gmp.oitm'].search([
+                ('itemcode', 'in', codes)
+            ])
+
+            record.allowed_item_ids = items  
+
     # HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU
     @api.onchange('item_id', 'productionplan_id')
     def _onchange_load_data(self):
-        if not self.item_id:
-            return
-
-        # 1. Load UOM
-        if self.item_id.iuomcode:
-            uom = self.env['gmp.ouom'].search([('uomcode', '=', self.item_id.iuomcode)], limit=1)
-            if uom:
-                self.uom_id = uom
+        # 1. LOAD FROMTS, TOTS TỪ THÀNH PHẨM (ITEM_ID) ---
+        if self.productionplan_id and self.item_id:
+            # Tìm dòng đầu tiên trong bảng chi tiết của kế hoạch khớp với mã thành phẩm
+            # Giả sử model chi tiết kế hoạch là 'base.daily.production.plan.detail'
+            prod_detail = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', self.productionplan_id.docentry), # Liên kết qua docentry hoặc id tùy model của bạn
+                ('u_itemcode', '=', self.item_id.itemcode)
+            ], limit=1, order='id asc') # Lấy dòng đầu tiên
+            
+            if prod_detail:
+                self.fromts = prod_detail.u_fromts
+                self.tots = prod_detail.u_tots
+            else:
+                self.fromts = 0
+                self.tots = 0
+        else:
+            self.fromts = 0
+            self.tots = 0 
     
     @api.onchange('search_docnum')
     def _onchange_search_docnum(self):

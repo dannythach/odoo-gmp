@@ -12,8 +12,6 @@ class gmpmaterialfeeding(models.Model):
         required=True
     )
 
-    #itemcode = fields.Char(string="Mã NPL", required=True)
-    #itemname = fields.Char(string="Tên NPL", required=True)
     productionplan_id = fields.Many2one(
         comodel_name="base.daily.production.plan",
         string="Plan",
@@ -46,23 +44,55 @@ class gmpmaterialfeeding(models.Model):
         readonly=True
     )
 
+    # Thành phẩm
     item_id = fields.Many2one(
         comodel_name="gmp.oitm",
-        string="Nguyên phụ liệu",
-        required=True
+        string="Sản phẩm",
+        required=True,
+        domain="[('id', 'in', allowed_item_ids)]"
     )
     itemcode = fields.Char(
         related="item_id.itemcode",
+        string="Mã sản phẩm",
         store=True,
         readonly=True
     )
     itemname = fields.Char(
         related="item_id.itemname",
+        string="Tên sản phẩm",
         store=True,
         readonly=True
     )
-    # lot_code = fields.Char(string="Mã lô SX")
-    # batch_code = fields.Char(string="Mã mẻ")
+    fromts = fields.Integer(
+        string="Từ TS",
+        readonly=True,
+        help="Lấy từ dòng đầu tiên của kế hoạch sản xuất tương ứng với thành phẩm"
+    )
+    tots = fields.Integer(
+        string="Đến TS",
+        readonly=True,
+        help="Lấy từ dòng đầu tiên của kế hoạch sản xuất tương ứng với thành phẩm"
+    )
+
+    # Nguyên phụ liệu
+    material_id = fields.Many2one(
+        comodel_name="gmp.oitm",
+        string="Nguyên phụ liệu",
+        required=True,
+        domain="[('id', 'in', allowed_material_ids)]"
+    )
+    materialcode = fields.Char(
+        related="material_id.itemcode",
+        string="Mã nguyên phụ liệu",
+        store=True,
+        readonly=True
+    )
+    materialname = fields.Char(
+        related="material_id.itemname",
+        string="Tên nguyên phụ liệu",
+        store=True,
+        readonly=True
+    )
     uom_id = fields.Many2one(
         comodel_name="gmp.ouom",
         string="Đơn vị tính",
@@ -78,7 +108,8 @@ class gmpmaterialfeeding(models.Model):
         store=True,
         readonly=True
     )
-    # uom = fields.Char(string="ĐVT")
+
+    # Định mức
     bom_quantity = fields.Float(string="SL theo BOM/Định mức")
     actual_quantity = fields.Float(string="SL thực tế", required=True)
     # quantity_variance = fields.Float(string="Chênh lệch SL", compute="_compute_quantity_variance")
@@ -179,8 +210,20 @@ class gmpmaterialfeeding(models.Model):
     )
     note = fields.Text(string="Ghi chú")
 
-    # --- CÁC HÀM XỬ LÝ LOGIC ---
+    # tạo field tạm chứa allowed items
+    allowed_item_ids = fields.Many2many(
+        'gmp.oitm',
+        compute='_compute_allowed_items',
+        store=False
+    )
 
+    allowed_material_ids = fields.Many2many(
+        'gmp.oitm',
+        compute='_compute_allowed_materials',
+        store=False
+    )
+
+    # --- CÁC HÀM XỬ LÝ LOGIC ---
     @api.depends("bom_quantity", "actual_quantity")
     def _compute_quantity_variance(self):
         for record in self:
@@ -193,23 +236,95 @@ class gmpmaterialfeeding(models.Model):
                 record.productionplanfactory = record.productionplan_id.u_factory
             else:
                 record.productionplanfactory = False
+    
+    # compute
+    # item_id
+    @api.depends('productionplan_id')
+    def _compute_allowed_items(self):
+        for record in self:
+            if not record.productionplan_id:
+                record.allowed_item_ids = [(5, 0, 0)]
+                continue
 
-    # HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU
-    @api.onchange('item_id', 'productionplan_id')
+            plan_details = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', record.productionplan_id.docentry)
+            ])
+
+            codes = list(set([
+                str(code).strip()
+                for code in plan_details.mapped('u_itemcode')
+                if code
+            ]))
+
+            items = self.env['gmp.oitm'].search([
+                ('itemcode', 'in', codes)
+            ])
+
+            record.allowed_item_ids = items
+
+    # material_id        
+    @api.depends('productionplan_id')
+    def _compute_allowed_materials(self):
+        for record in self:
+            if not record.productionplan_id:
+                record.allowed_material_ids = [(5, 0, 0)]
+                continue
+
+            materials = self.env['base.material.detail'].search([
+                ('docnum', '=', record.productionplan_id.docnum)
+            ])
+
+            codes = list(set([
+                str(code).strip()
+                for code in materials.mapped('materialcode')
+                if code
+            ]))
+
+            items = self.env['gmp.oitm'].search([
+                ('itemcode', 'in', codes)
+            ])
+
+            record.allowed_material_ids = items
+
+    # CÁC HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU     
+    @api.onchange('item_id','material_id', 'productionplan_id')
     def _onchange_load_data(self):
-        if not self.item_id:
+        # 1. LOAD FROMTS, TOTS TỪ THÀNH PHẨM (ITEM_ID) ---
+        if self.productionplan_id and self.item_id:
+            # Tìm dòng đầu tiên trong bảng chi tiết của kế hoạch khớp với mã thành phẩm
+            # Giả sử model chi tiết kế hoạch là 'base.daily.production.plan.detail'
+            prod_detail = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', self.productionplan_id.docentry), # Liên kết qua docentry hoặc id tùy model của bạn
+                ('u_itemcode', '=', self.item_id.itemcode)
+            ], limit=1, order='id asc') # Lấy dòng đầu tiên
+            
+            if prod_detail:
+                self.fromts = prod_detail.u_fromts
+                self.tots = prod_detail.u_tots
+            else:
+                self.fromts = 0
+                self.tots = 0
+        else:
+            self.fromts = 0
+            self.tots = 0 
+
+        # 2. KIỂM TRA NGUYÊN PHỤ LIỆU
+        # Nếu chưa chọn Material thì dừng các bước tính toán BOM/UOM phía dưới
+        if not self.material_id:
+            self.uom_id = False
+            self.bom_quantity = 0.0
             return
 
-        # 1. Load UOM
-        if self.item_id.iuomcode:
-            uom = self.env['gmp.ouom'].search([('uomcode', '=', self.item_id.iuomcode)], limit=1)
+        # 3. Load UOM
+        if self.material_id.iuomcode:
+            uom = self.env['gmp.ouom'].search([('uomcode', '=', self.material_id.iuomcode)], limit=1)
             if uom:
                 self.uom_id = uom
 
-        # 2. Load BOM dựa trên docnum và itemcode
-        if self.productionplan_id and self.item_id:
+        # 4. Load BOM dựa trên docnum và itemcode
+        if self.productionplan_id and self.material_id:
             material = self.env['base.material.detail'].search([
-                ('materialcode', '=', self.item_id.itemcode),
+                ('materialcode', '=', self.material_id.itemcode),
                 ('docnum', '=', self.productionplan_id.docnum)
             ], limit=1)
 

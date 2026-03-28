@@ -14,11 +14,10 @@
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
                 <field name="lot_code"/>
                 <field name="batch_code"/>
-                <field name="uom_id"/>
-                <field name="uomcode"/>
-                <field name="uomname"/>
                 <field name="equipment_code"/>
                 <field name="mixing_time"/>
                 <field name="dough_temperature"/>
@@ -26,6 +25,7 @@
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
+                <field name="allowed_item_ids" invisible="1"/>
             </tree>
         </field>
     </record>
@@ -45,12 +45,11 @@
                         <field name="productionplanfactory"/>
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
-                        <field name="itemname"/>                        
+                        <field name="itemname"/> 
+                        <field name="fromts"/>
+                        <field name="tots"/>                       
                         <field name="lot_code"/>
                         <field name="batch_code"/>
-                        <field name="uom_id" options="{'no_open': True}"/>
-                        <field name="uomcode"/>
-                        <field name="uomname"/>
                         <field name="equipment_code"/>
                         <field name="mixing_time"/>
                         <field name="dough_temperature"/>
@@ -61,6 +60,7 @@
                         <field name="result"/>
                         <field name="operator"/>
                         <field name="note"/>
+                        <field name="allowed_item_ids" invisible="1"/>
                     </group>
                 </sheet>
             </form>
