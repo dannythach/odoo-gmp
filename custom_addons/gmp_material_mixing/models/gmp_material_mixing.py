@@ -46,6 +46,24 @@ class gmpmaterialmixing(models.Model):
         readonly=True
     )
 
+    line_id = fields.Many2one(
+        comodel_name="base.line",
+        string="Dây chuyền",
+        required=True
+    )
+    linecode = fields.Char(
+        related="line_id.code",
+        string="Mã dây chuyền",
+        store=True,
+        readonly=True
+    )
+    linename = fields.Char(
+        related="line_id.name",
+        store=True,
+        string="Tên dây chuyền",
+        readonly=True
+    )
+
     # Thành phẩm
     item_id = fields.Many2one(
         comodel_name="gmp.oitm",
@@ -121,15 +139,16 @@ class gmpmaterialmixing(models.Model):
 
     # compute
     # item_id
-    @api.depends('productionplan_id')
+    @api.depends('productionplan_id','line_id')
     def _compute_allowed_items(self):
         for record in self:
-            if not record.productionplan_id:
+            if not record.productionplan_id or not record.line_id:
                 record.allowed_item_ids = [(5, 0, 0)]
                 continue
 
             plan_details = self.env['base.daily.production.plan.detail'].search([
-                ('docentry', '=', record.productionplan_id.docentry)
+                ('docentry', '=', record.productionplan_id.docentry),
+                ('u_oriline', '=', record.line_id.code) # Hoặc id tùy vào kiểu dữ liệu của u_line
             ])
 
             codes = list(set([
@@ -142,7 +161,7 @@ class gmpmaterialmixing(models.Model):
                 ('itemcode', 'in', codes)
             ])
 
-            record.allowed_item_ids = items  
+            record.allowed_item_ids = items 
 
     # HÀM ONCHANGE DUY NHẤT ĐỂ LOAD DỮ LIỆU
     @api.onchange('item_id', 'productionplan_id')

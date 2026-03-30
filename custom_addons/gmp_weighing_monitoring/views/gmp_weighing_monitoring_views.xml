@@ -25,10 +25,14 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
+                <field name="log_date" invisible="1"/> 
                 <field name="productionplan_id"/>
                 <field name="productionplancode"/>
                 <field name="productionplanname"/>
                 <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="linename"/>
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
@@ -65,10 +69,17 @@
                 <sheet>
                     <group>
                         <field name="log_datetime"/>
-                        <field name="productionplan_id" options="{'no_open': True}"/>
+                        <field name="log_date" invisible="1"/> 
+                        <field name="productionplan_id" 
+                            context="{'search_default_u_docdate': log_date}"
+                            domain="[('u_docdate', '=', log_date)]"
+                            options="{'no_create': True, 'no_open': True}"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
                         <field name="productionplanfactory"/>
+                        <field name="line_id"/>
+                        <field name="linecode"/>
+                        <field name="linename"/>
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
                         <field name="itemname"/> 

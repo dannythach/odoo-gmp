@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Tree view -->
-    <record id="view_gmp_dough_sheeting_tree" model="ir.ui.view">
-        <field name="name">gmp.dough.sheeting.tree</field>
-        <field name="model">gmp.dough.sheeting</field>
+    <record id="view_gmp_seasoning_dipping_tree" model="ir.ui.view">
+        <field name="name">gmp.seasoning.dipping.tree</field>
+        <field name="model">gmp.seasoning.dipping</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
@@ -14,6 +14,9 @@
                 <field name="line_id"/>
                 <field name="linecode"/>
                 <field name="linename"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
@@ -21,13 +24,13 @@
                 <field name="tots"/>
                 <field name="lot_code"/>
                 <field name="batch_code"/>
-                <field name="rough_roller_id"/>
-                <field name="rough_speed"/>
-                <field name="rough_thickness"/>
-                <field name="final_roller_id"/>
-                <field name="final_speed"/>
-                <field name="final_thickness"/>
-                <field name="final_status"/>               
+                <field name="equipment_code"/>
+                <field name="soup_temperature"/>
+                <field name="dipping_time"/>
+                <field name="soup_rate"/>
+                <field name="noodle_status"/>
+                <field name="cip"/>
+                <field name="cop"/>           
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
@@ -37,9 +40,9 @@
     </record>
 
     <!-- Form view -->
-    <record id="view_gmp_dough_sheeting_form" model="ir.ui.view">
-        <field name="name">gmp.dough.sheeting.form</field>
-        <field name="model">gmp.dough.sheeting</field>
+    <record id="view_gmp_seasoning_dipping_form" model="ir.ui.view">
+        <field name="name">gmp.seasoning.dipping.form</field>
+        <field name="model">gmp.seasoning.dipping</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -48,30 +51,30 @@
                         <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
-                        <field name="productionplanfactory"/>     
+                        <field name="productionplanfactory"/>  
                         <field name="line_id"/>
                         <field name="linecode"/>
                         <field name="linename"/>
+                        <field name="shift_id"/>
+                        <field name="shiftcode"/>
+                        <field name="shiftname"/>
                         <field name="item_id"/>
                         <field name="itemcode"/>
                         <field name="itemname"/>
                         <field name="fromts"/>
-                        <field name="tots"/>                                         
+                        <field name="tots"/>                                            
                         <field name="lot_code"/>
                         <field name="batch_code"/>
                     </group>
 
-                    <group string="Cán thô">   
-                        <field name="rough_roller_id"/>
-                        <field name="rough_speed"/>
-                        <field name="rough_thickness"/>
-                    </group>
-
-                    <group string="Cán tinh">   
-                        <field name="final_roller_id"/>
-                        <field name="final_speed"/>
-                        <field name="final_thickness"/>
-                        <field name="final_status"/>  
+                    <group>   
+                        <field name="equipment_code"/>
+                        <field name="soup_temperature"/>
+                        <field name="dipping_time"/>
+                        <field name="soup_rate"/>
+                        <field name="noodle_status"/>
+                        <field name="cip"/>
+                        <field name="cop"/>         
                     </group>
 
                     <group>
@@ -86,28 +89,27 @@
     </record>
 
     <!-- Action -->
-    <record id="action_gmp_dough_sheeting" model="ir.actions.act_window">
-        <field name="name">Cán bột</field>
-        <field name="res_model">gmp.dough.sheeting</field>
+    <record id="action_gmp_seasoning_dipping" model="ir.actions.act_window">
+        <field name="name">Nhúng nước lèo</field>
+        <field name="res_model">gmp.seasoning.dipping</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Action Create -->
-    <record id="action_gmp_dough_sheeting_create" model="ir.actions.act_window">
-        <field name="name">Cán bột (Create)</field>
-        <field name="res_model">gmp.dough.sheeting</field>
+    <record id="action_gmp_cutting_create" model="ir.actions.act_window">
+        <field name="name">Nhúng nước lèo (Create)</field>
+        <field name="res_model">gmp.seasoning.dipping</field>
         <field name="view_mode">form</field>
         <field name="context">{'default_qr_search_num': active_id}</field>
     </record>
 
     <!-- Menu -->
     <menuitem
-        id="menu_gmp_dough_sheeting"
-        name="Cán bột"
+        id="menu_gmp_seasoning_dipping"
+        name="Nhúng nước lèo"
         parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_dough_sheeting"
+        action="action_gmp_seasoning_dipping"
         sequence="10"
     />
-
 
 </odoo>

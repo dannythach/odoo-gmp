@@ -7,6 +7,7 @@
         <field name="model">base.daily.production.plan</field>
         <field name="arch" type="xml">
             <tree>
+                <!-- <field name="docnum"/> -->
                 <field name="docnum"/>
                 <field name="remark"/>
             </tree>
@@ -19,7 +20,7 @@
         <field name="model">base.daily.production.plan</field>
         <field name="arch" type="xml">
             <search string="Tìm lịch sản xuất">
-                <field name="docnum" string="Lịch sản xuất"/>
+                <field name="docnum" string="Số kế hoạch"/>
                 <field name="remark" string="Ghi chú"/>
             </search>
         </field>

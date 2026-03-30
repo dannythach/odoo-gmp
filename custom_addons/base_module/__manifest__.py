@@ -8,6 +8,7 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
+        "views/base_daily_production_plan_views.xml",
         "views/gmp_oitm_views.xml",
         "views/gmp_ouom_views.xml",
     ],

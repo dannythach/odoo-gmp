@@ -11,6 +11,9 @@
                 <field name="productionplancode"/>
                 <field name="productionplanname"/>
                 <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="linename"/>
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
@@ -45,7 +48,10 @@
                         <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
-                        <field name="productionplanfactory"/>  
+                        <field name="productionplanfactory"/>  .
+                        <field name="line_id"/>
+                        <field name="linecode"/>
+                        <field name="linename"/>
                         <field name="item_id"/>
                         <field name="itemcode"/>
                         <field name="itemname"/>
