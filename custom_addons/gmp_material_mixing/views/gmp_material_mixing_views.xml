@@ -7,6 +7,7 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
+                <field name="log_date" invisible="1"/> 
                 <field name="productionplan_id"/>
                 <field name="productionplancode"/>
                 <field name="productionplanname"/>
@@ -14,6 +15,9 @@
                 <field name="line_id"/>
                 <field name="linecode"/>
                 <field name="linename"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
@@ -42,13 +46,20 @@
                 <sheet>
                     <group>
                         <field name="log_datetime"/>
-                        <field name="productionplan_id" options="{'no_open': True}" force_save="1"/>
+                        <field name="log_date" invisible="1"/> 
+                        <field name="productionplan_id" 
+                            context="{'search_default_u_docdate': log_date}"
+                            domain="[('u_docdate', '=', log_date)]"
+                            options="{'no_create': True, 'no_open': True}"/>
                         <field name="productionplancode"/>  
                         <field name="productionplanname"/>
                         <field name="productionplanfactory"/>
                         <field name="line_id"/>
                         <field name="linecode"/>
                         <field name="linename"/>
+                        <field name="shift_id"/>
+                        <field name="shiftcode"/>
+                        <field name="shiftname"/>
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
                         <field name="itemname"/> 
@@ -80,21 +91,13 @@
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Action Create -->
-    <record id="action_gmp_material_mixing_create" model="ir.actions.act_window">
-        <field name="name">Nhào trộn NPL (Create)</field>
-        <field name="res_model">gmp.material.mixing</field>
-        <field name="view_mode">form</field>
-        <field name="context">{'default_qr_search_num': active_id}</field>
-    </record>
-
     <!-- Menu -->
     <menuitem
         id="menu_gmp_material_mixing"
         name="Nhào trộn NPL"
         parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
         action="action_gmp_material_mixing"
-        sequence="10"
+        sequence="3"
     />
 
 

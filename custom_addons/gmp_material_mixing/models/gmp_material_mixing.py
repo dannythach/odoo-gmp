@@ -11,6 +11,12 @@ class gmpmaterialmixing(models.Model):
         default=fields.Datetime.now,
         required=True
     )
+    # Thêm trường này vào model gmpweighingmonitoring
+    log_date = fields.Date(
+        string="Ngày ghi nhận",
+        compute="_compute_log_date",
+        store=True
+)
 
     #itemcode = fields.Char(string="Mã NPL", required=True)
     #itemname = fields.Char(string="Tên NPL", required=True)
@@ -61,6 +67,23 @@ class gmpmaterialmixing(models.Model):
         related="line_id.name",
         store=True,
         string="Tên dây chuyền",
+        readonly=True
+    )
+    shift_id = fields.Many2one(
+        comodel_name="base.shift",
+        string="Ca",
+        required=True
+    )
+    shiftcode = fields.Char(
+        related="shift_id.code",
+        string="Mã ca",
+        store=True,
+        readonly=True
+    )
+    shiftname = fields.Char(
+        related="shift_id.name",
+        store=True,
+        string="Tên ca",
         readonly=True
     )
 
@@ -139,16 +162,17 @@ class gmpmaterialmixing(models.Model):
 
     # compute
     # item_id
-    @api.depends('productionplan_id','line_id')
+    @api.depends('productionplan_id','line_id','shift_id')
     def _compute_allowed_items(self):
         for record in self:
-            if not record.productionplan_id or not record.line_id:
+            if not record.productionplan_id or not record.line_id or not record.shift_id:
                 record.allowed_item_ids = [(5, 0, 0)]
                 continue
 
             plan_details = self.env['base.daily.production.plan.detail'].search([
                 ('docentry', '=', record.productionplan_id.docentry),
-                ('u_oriline', '=', record.line_id.code) # Hoặc id tùy vào kiểu dữ liệu của u_line
+                ('u_oriline', '=', record.line_id.code), # Hoặc id tùy vào kiểu dữ liệu của u_line
+                ('u_shift', '=', record.shift_id.code) # Hoặc id tùy vào kiểu dữ liệu của u_line
             ])
 
             codes = list(set([
@@ -185,12 +209,24 @@ class gmpmaterialmixing(models.Model):
             self.fromts = 0
             self.tots = 0 
     
-    @api.onchange('search_docnum')
-    def _onchange_search_docnum(self):
-        if self.search_docnum:
-            # Tự đi tìm ID thực từ số DocNum người dùng nhập
-            plan = self.env['base.daily.production.plan'].search([
-                ('docnum', '=', int(self.search_docnum))
-            ], limit=1)
-            if plan:
-                self.productionplan_id = plan.id
+    # Hàm xử lý lọc lại Plan khi chọn lại ngày
+    @api.depends('log_datetime')
+    def _compute_log_date(self):
+        for record in self:
+            if record.log_datetime:
+                # Chuyển đổi datetime thành date để so sánh chính xác trong XML domain
+                record.log_date = record.log_datetime.date()
+            else:
+                record.log_date = False
+
+    # Cập nhật lại hàm onchange để dùng trường mới
+    @api.onchange('log_datetime')
+    def _onchange_log_datetime_filter_plan(self):
+        self.productionplan_id = False 
+        if self.log_datetime:
+            # Trả về domain dựa trên Date thay vì Datetime
+            return {
+                'domain': {
+                    'productionplan_id': [('u_docdate', '=', self.log_datetime.date())]
+                }
+            }  

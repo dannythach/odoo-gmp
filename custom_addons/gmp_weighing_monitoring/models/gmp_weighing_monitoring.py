@@ -17,7 +17,7 @@ class gmpweighingmonitoring(models.Model):
         string="Ngày ghi nhận",
         compute="_compute_log_date",
         store=True
-)
+    )
 
     productionplan_id = fields.Many2one(
         comodel_name="base.daily.production.plan",

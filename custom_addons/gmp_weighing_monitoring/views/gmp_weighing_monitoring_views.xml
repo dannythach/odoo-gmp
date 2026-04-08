@@ -15,7 +15,7 @@
         name="Chuẩn bị và cân định lượng NPL"
         parent="menu_noodle_production_log_root"
         action="action_gmp_weighing_monitoring"
-        sequence="10"
+        sequence="1"
     />
 
     <!-- Tree view -->
@@ -33,6 +33,9 @@
                 <field name="line_id"/>
                 <field name="linecode"/>
                 <field name="linename"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
                 <field name="item_id"/>
                 <field name="itemcode"/>
                 <field name="itemname"/>
@@ -80,6 +83,9 @@
                         <field name="line_id"/>
                         <field name="linecode"/>
                         <field name="linename"/>
+                        <field name="shift_id"/>
+                        <field name="shiftcode"/>
+                        <field name="shiftname"/>
                         <field name="item_id" options="{'no_open': True}"/>
                         <field name="itemcode"/>
                         <field name="itemname"/> 

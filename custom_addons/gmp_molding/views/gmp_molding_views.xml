@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_gmp_molding_tree" model="ir.ui.view">
+        <field name="name">gmp.molding.tree</field>
+        <field name="model">gmp.molding</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="log_datetime"/>
+                <field name="log_date" invisible="1"/> 
+                <field name="productionplan_id"/>
+                <field name="productionplancode"/>
+                <field name="productionplanname"/>
+                <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="linename"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
+                <field name="item_id"/>
+                <field name="itemcode"/>
+                <field name="itemname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
+                <field name="lot_code"/>
+                <field name="batch_code"/>
+                <field name="mold_chain_system_id"/>
+                <field name="mold_type_info"/>
+                <field name="noodle_cake_size"/>
+                <field name="size_tolerance"/>
+                <field name="weight_per_cake"/>
+                <field name="weight_tolerance"/>
+                <field name="molding_status"/>          
+                <field name="result"/>
+                <field name="operator"/>
+                <field name="note"/>
+                <field name="allowed_item_ids" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_gmp_molding_form" model="ir.ui.view">
+        <field name="name">gmp.molding.form</field>
+        <field name="model">gmp.molding</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="log_datetime"/>
+                        <field name="log_date" invisible="1"/> 
+                        <field name="productionplan_id" 
+                            context="{'search_default_u_docdate': log_date}"
+                            domain="[('u_docdate', '=', log_date)]"
+                            options="{'no_create': True, 'no_open': True}"/>
+                        <field name="productionplancode"/>  
+                        <field name="productionplanname"/>
+                        <field name="productionplanfactory"/>  
+                        <field name="line_id"/>
+                        <field name="linecode"/>
+                        <field name="linename"/>
+                        <field name="shift_id"/>
+                        <field name="shiftcode"/>
+                        <field name="shiftname"/>
+                        <field name="item_id"/>
+                        <field name="itemcode"/>
+                        <field name="itemname"/>
+                        <field name="fromts"/>
+                        <field name="tots"/>                                            
+                        <field name="lot_code"/>
+                        <field name="batch_code"/>
+                    </group>
+
+                    <group>   
+                        <field name="mold_chain_system_id"/>
+                        <field name="mold_type_info"/>
+                        <field name="noodle_cake_size"/>
+                        <field name="size_tolerance"/>
+                        <field name="weight_per_cake"/>
+                        <field name="weight_tolerance"/>
+                        <field name="molding_status"/>        
+                    </group>
+
+                    <group>
+                        <field name="result"/>
+                        <field name="operator"/>
+                        <field name="note"/>
+                        <field name="allowed_item_ids" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_gmp_molding" model="ir.actions.act_window">
+        <field name="name">Vô khuôn</field>
+        <field name="res_model">gmp.molding</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_gmp_molding"
+        name="Vô khuôn"
+        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
+        action="action_gmp_molding"
+        sequence="10"
+    />
+
+</odoo>

@@ -12,6 +12,13 @@ class gmpseasoningdipping(models.Model):
         required=True
     )
 
+    # Thêm trường này vào model gmpseasoningdipping
+    log_date = fields.Date(
+        string="Ngày ghi nhận",
+        compute="_compute_log_date",
+        store=True
+    )
+
     # Liên kết với kế hoạch sản xuất
     productionplan_id = fields.Many2one(
         comodel_name="base.daily.production.plan",
@@ -224,16 +231,25 @@ class gmpseasoningdipping(models.Model):
             self.fromts = 0
             self.tots = 0 
 
-    # @api.onchange('search_docnum')
-    # def _onchange_search_docnum(self):
-    #     """Tìm kế hoạch sản xuất dựa trên số DocNum nhập vào"""
-    #     if self.search_docnum:
-    #         try:
-    #             docnum_val = int(self.search_docnum)
-    #             plan = self.env['base.daily.production.plan'].search([
-    #                 ('docnum', '=', docnum_val)
-    #             ], limit=1)
-    #             if plan:
-    #                 self.productionplan_id = plan.id
-    #         except ValueError:
-    #             pass
+    
+    # Hàm xử lý lọc lại Plan khi chọn lại ngày
+    @api.depends('log_datetime')
+    def _compute_log_date(self):
+        for record in self:
+            if record.log_datetime:
+                # Chuyển đổi datetime thành date để so sánh chính xác trong XML domain
+                record.log_date = record.log_datetime.date()
+            else:
+                record.log_date = False
+
+    # Cập nhật lại hàm onchange để dùng trường mới
+    @api.onchange('log_datetime')
+    def _onchange_log_datetime_filter_plan(self):
+        self.productionplan_id = False 
+        if self.log_datetime:
+            # Trả về domain dựa trên Date thay vì Datetime
+            return {
+                'domain': {
+                    'productionplan_id': [('u_docdate', '=', self.log_datetime.date())]
+                }
+            } 

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Tree view -->
+    <record id="view_gmp_metal_detection_tree" model="ir.ui.view">
+        <field name="name">gmp.metal.detection.tree</field>
+        <field name="model">gmp.metal.detection</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="log_datetime"/>
+                <field name="log_date" invisible="1"/> 
+                <field name="productionplan_id"/>
+                <field name="productionplancode"/>
+                <field name="productionplanname"/>
+                <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="linename"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
+                <field name="shift_id"/>
+                <field name="shiftcode"/>
+                <field name="shiftname"/>
+                <field name="item_id"/>
+                <field name="itemcode"/>
+                <field name="itemname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
+
+                <field name="machine_id"/>
+                <field name="machine_type"/>
+                <field name="fe_type"/>
+                <field name="nonfe_type"/>
+                <field name="sus_type"/>
+
+                <field name="lot_code"/>
+                <field name="batch_code"/>
+                <field name="quantity_of_products_scanned"/>  
+                <field name="quantity_of_products_detected"/> 
+
+                <field name="fe_detected"/>
+                <field name="nonfe_detected"/>  
+                <field name="sus_detected"/>
+
+                <field name="re_scanned"/>
+                <field name="isolated"/>  
+                <field name="opened"/>
+
+                <field name="result"/>
+                <field name="operator"/>
+                <field name="note"/>
+                <field name="allowed_item_ids" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- Form view -->
+    <record id="view_gmp_metal_detection_form" model="ir.ui.view">
+        <field name="name">gmp.metal.detection.form</field>
+        <field name="model">gmp.metal.detection</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="log_datetime"/>
+                        <field name="log_date" invisible="1"/> 
+                        <field name="productionplan_id" 
+                            context="{'search_default_u_docdate': log_date}"
+                            domain="[('u_docdate', '=', log_date)]"
+                            options="{'no_create': True, 'no_open': True}"/>
+                        <field name="productionplancode"/>  
+                        <field name="productionplanname"/>
+                        <field name="productionplanfactory"/>  
+                        <field name="line_id"/>
+                        <field name="linecode"/>
+                        <field name="linename"/>
+                        <field name="shift_id"/>
+                        <field name="shiftcode"/>
+                        <field name="shiftname"/>
+                        <field name="item_id"/>
+                        <field name="itemcode"/>
+                        <field name="itemname"/>
+                        <field name="fromts"/>
+                        <field name="tots"/>                                            
+                    </group>
+
+                    <group string="Thử độ nhạy máy dò kim loại qua Kit Test">   
+                        <field name="machine_id"/>
+                        <field name="machine_type"/>
+                        <field name="fe_type"/>
+                        <field name="nonfe_type"/>
+                        <field name="sus_type"/>
+                    </group>
+                    
+                    <group> 
+                        <field name="lot_code"/>
+                        <field name="batch_code"/>
+                        <field name="quantity_of_products_scanned"/>  
+                        <field name="quantity_of_products_detected"/> 
+                    </group>
+
+                    <group string="Số lượng/Loại phát hiện">   
+                        <field name="fe_detected"/>
+                        <field name="nonfe_detected"/>  
+                        <field name="sus_detected"/>
+                    </group>
+
+                    <group string="Số lượng/ Cách thức xử lý">  
+                        <field name="re_scanned"/>
+                        <field name="isolated"/>  
+                        <field name="opened"/>            
+                    </group>
+
+                    <group>
+                        <field name="result"/>
+                        <field name="operator"/>
+                        <field name="note"/>
+                        <field name="allowed_item_ids" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_gmp_metal_detection" model="ir.actions.act_window">
+        <field name="name">Dò kim loại sản phẩm</field>
+        <field name="res_model">gmp.metal.detection</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- Menu -->
+    <menuitem
+        id="menu_gmp_metal_detection"
+        name="Dò kim loại sản phẩm"
+        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
+        action="action_gmp_metal_detection"
+        sequence="17"
+    />
+
+</odoo>
