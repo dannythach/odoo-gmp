@@ -7,38 +7,38 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
-                <field name="log_date" invisible="1"/> 
-                <field name="productionplan_id"/>
+                <field name="log_date" optional="hide"/> 
+                <field name="productionplan_id" optional="hide"/>
                 <field name="productionplancode"/>
-                <field name="productionplanname"/>
-                <field name="productionplanfactory"/>
-                <field name="line_id"/>
-                <field name="linecode"/>
-                <field name="linename"/>
-                <field name="shift_id"/>
-                <field name="shiftcode"/>
-                <field name="shiftname"/>
-                <field name="shift_id"/>
-                <field name="shiftcode"/>
-                <field name="shiftname"/>
-                <field name="item_id"/>
-                <field name="itemcode"/>
-                <field name="itemname"/>
-                <field name="fromts"/>
-                <field name="tots"/>
-                <field name="lot_code"/>
-                <field name="batch_code"/>
-                <field name="equipment_code"/>
-                <field name="soup_temperature"/>
-                <field name="dipping_time"/>
-                <field name="soup_rate"/>
-                <field name="noodle_status"/>
-                <field name="cip"/>
-                <field name="cop"/>           
+                <field name="productionplanname" optional="hide"/>
+                <field name="productionplanfactory" optional="hide"/>
+                <field name="line_id" optional="hide"/>
+                <field name="linecode" optional="hide"/>
+                <field name="linename" optional="hide"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftcode" optional="hide"/>
+                <field name="shiftname" optional="hide"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftcode" optional="hide"/>
+                <field name="shiftname" optional="hide"/>
+                <field name="item_id" optional="hide"/>
+                <field name="itemcode" optional="hide"/>
+                <field name="itemname" optional="hide"/>
+                <field name="fromts" optional="hide"/>
+                <field name="tots" optional="hide"/>
+                <field name="lot_code" optional="hide"/>
+                <field name="batch_code" optional="hide"/>
+                <field name="equipment_code" optional="hide"/>
+                <field name="soup_temperature" optional="hide"/>
+                <field name="dipping_time" optional="hide"/>
+                <field name="soup_rate" optional="hide"/>
+                <field name="noodle_status" optional="hide"/>
+                <field name="cip" optional="hide"/>
+                <field name="cop" optional="hide"/>           
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
-                <field name="allowed_item_ids" invisible="1"/>
+                <field name="allowed_item_ids" optional="hide"/>
             </tree>
         </field>
     </record>

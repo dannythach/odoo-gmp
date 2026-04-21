@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gmp_weighing_monitoring_wizard_view_form" model="ir.ui.view">
+            <field name="name">gmp.weighing.monitoring.wizard.form</field>
+            <field name="model">gmp.weighing.monitoring.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Thông số cân định lượng">
+                    <sheet>
+                        <field name="valid_item_ids" invisible="1"/>
+                        <field name="valid_material_ids" invisible="1"/>
+                        <field name="monitoring_id" invisible="1"/>
+                        <field name="line_id" invisible="1"/>
+
+                        <div class="oe_title" invisible="not line_id">
+                            <span class="badge rounded-pill text-bg-info" style="font-size: 14px;">Chế độ: Chỉnh sửa dòng cũ</span>
+                        </div>
+                        <div class="oe_title" invisible="line_id">
+                            <span class="badge rounded-pill text-bg-success" style="font-size: 14px;">Chế độ: Thêm dòng mới</span>
+                        </div>
+
+                        <group>
+                            <group string="Thông tin sản phẩm">
+                                <field name="log_datetime"/>
+                                <field name="item_id" 
+                                       domain="[('id', 'in', valid_item_ids)]"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="fromts"/>
+                                <field name="tots"/>
+                            </group>
+                            
+                            <group string="Thông tin nguyên liệu">
+                                <field name="material_id" 
+                                       domain="[('id', 'in', valid_material_ids)]"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="materialname"/>
+                                <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                        </group>
+
+                        <group string="Kết quả cân thực tế">
+                            <group>
+                                <field name="lot_code" placeholder="Nhập mã lô..."/>
+                                <field name="batch_code" placeholder="Nhập mã mẻ..."/>
+                                <field name="bom_quantity" readonly="1" force_save="1"/>
+                            </group>
+                            <group>
+                                <field name="actual_quantity"/>
+                                <field name="quantity_variance" readonly="1" force_save="1" 
+                                       decoration-danger="quantity_variance != 0" 
+                                       style="font-weight: bold;"/>
+                                <field name="result" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                        </group>
+                        
+                        <group>
+                            <field name="note" placeholder="Ghi chú chi tiết nếu có..."/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button string="Lưu dữ liệu" name="action_confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Đóng" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

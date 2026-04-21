@@ -7,49 +7,49 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
-                <field name="log_date" invisible="1"/> 
-                <field name="productionplan_id"/>
+                <field name="log_date" optional="hide"/> 
+                <field name="productionplan_id" optional="hide"/>
                 <field name="productionplancode"/>
-                <field name="productionplanname"/>
-                <field name="productionplanfactory"/>
-                <field name="line_id"/>
-                <field name="linecode"/>
-                <field name="linename"/>
-                <field name="shift_id"/>
-                <field name="shiftcode"/>
-                <field name="shiftname"/>
-                <field name="shift_id"/>
-                <field name="shiftcode"/>
-                <field name="shiftname"/>
-                <field name="item_id"/>
-                <field name="itemcode"/>
-                <field name="itemname"/>
-                <field name="fromts"/>
-                <field name="tots"/>
+                <field name="productionplanname" optional="hide"/>
+                <field name="productionplanfactory" optional="hide"/>
+                <field name="line_id" optional="hide"/>
+                <field name="linecode" optional="hide"/>
+                <field name="linename" optional="hide"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftcode" optional="hide"/>
+                <field name="shiftname" optional="hide"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftcode" optional="hide"/>
+                <field name="shiftname" optional="hide"/>
+                <field name="item_id" optional="hide"/>
+                <field name="itemcode" optional="hide"/>
+                <field name="itemname" optional="hide"/>
+                <field name="fromts" optional="hide"/>
+                <field name="tots" optional="hide"/>
 
-                <field name="machine_id"/>
-                <field name="machine_type"/>
-                <field name="fe_type"/>
-                <field name="nonfe_type"/>
-                <field name="sus_type"/>
+                <field name="machine_id" optional="hide"/>
+                <field name="machine_type" optional="hide"/>
+                <field name="fe_type" optional="hide"/>
+                <field name="nonfe_type" optional="hide"/>
+                <field name="sus_type" optional="hide"/>
 
-                <field name="lot_code"/>
-                <field name="batch_code"/>
-                <field name="quantity_of_products_scanned"/>  
-                <field name="quantity_of_products_detected"/> 
+                <field name="lot_code" optional="hide"/>
+                <field name="batch_code" optional="hide"/>
+                <field name="quantity_of_products_scanned" optional="hide"/>  
+                <field name="quantity_of_products_detected" optional="hide"/> 
 
-                <field name="fe_detected"/>
-                <field name="nonfe_detected"/>  
-                <field name="sus_detected"/>
+                <field name="fe_detected" optional="hide"/>
+                <field name="nonfe_detected" optional="hide"/>  
+                <field name="sus_detected" optional="hide"/>
 
-                <field name="re_scanned"/>
-                <field name="isolated"/>  
-                <field name="opened"/>
+                <field name="re_scanned" optional="hide"/>
+                <field name="isolated" optional="hide"/>  
+                <field name="opened" optional="hide"/>
 
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
-                <field name="allowed_item_ids" invisible="1"/>
+                <field name="allowed_item_ids" optional="hide"/>
             </tree>
         </field>
     </record>

@@ -1,0 +1,5 @@
+docxcompose
+docxtpl
+docxcompose
+htmldocx
+beautifulsoup4

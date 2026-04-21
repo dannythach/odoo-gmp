@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_weighing_monitoring,gmp.weighing.monitoring,model_gmp_weighing_monitoring,base.group_user,1,1,1,1
+access_gmp_weighing_monitoring_line,gmp.weighing.monitoring.line,model_gmp_weighing_monitoring_line,base.group_user,1,1,1,1
+access_gmp_weighing_monitoring_wizard,gmp.weighing.monitoring.wizard,model_gmp_weighing_monitoring_wizard,base.group_user,1,1,1,1
+

@@ -250,3 +250,26 @@ class gmpseasoningaddition(models.Model):
                     'productionplan_id': [('u_docdate', '=', self.log_datetime.date())]
                 }
             } 
+    
+    def copy(self, default=None):
+        """
+        Ghi đè hàm copy để khi nhân bản:
+        1. Lấy thời gian hiện tại (mới nhất).
+        2. Các dữ liệu khác giữ nguyên từ bản ghi cũ.
+        """
+        default = dict(default or {})
+        
+        # Cập nhật log_datetime là thời gian hiện tại
+        default.update({
+            'log_datetime': fields.Datetime.now(),
+            # 'log_date': fields.Date.today(),
+        })
+        return super(gmpseasoningaddition, self).copy(default)
+    
+    def action_cron_duplicate_latest(self):
+        """Hàm dành cho Scheduled Action để nhân bản bản ghi gần nhất"""
+        # Tìm bản ghi mới nhất dựa trên thời gian ghi nhận
+        latest_record = self.search([], order='log_datetime desc', limit=1)
+        if latest_record:
+            # Gọi hàm copy đã ghi đè phía dưới
+            latest_record.copy()

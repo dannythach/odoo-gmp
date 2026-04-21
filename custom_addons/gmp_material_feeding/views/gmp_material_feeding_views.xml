@@ -25,41 +25,41 @@
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
-                <field name="log_date" invisible="1"/> 
-                <field name="productionplan_id"/>
+                <field name="log_date" optional="hide"/> 
+                <field name="productionplan_id" optional="hide"/>
                 <field name="productionplancode"/>
-                <field name="productionplanname"/>
-                <field name="productionplanfactory"/>
-                <field name="line_id"/>
-                <field name="linecode"/>
-                <field name="linename"/>
-                <field name="shift_id"/>
-                <field name="shiftcode"/>
-                <field name="shiftname"/>
-                <field name="item_id"/>
-                <field name="itemcode"/>
-                <field name="itemname"/>
-                <field name="fromts"/>
-                <field name="tots"/>
-                <field name="material_id"/>
+                <field name="productionplanname" optional="hide"/>
+                <field name="productionplanfactory" optional="hide"/>
+                <field name="line_id" optional="hide"/>
+                <field name="linecode" optional="hide"/>
+                <field name="linename" optional="hide"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftcode" optional="hide"/>
+                <field name="shiftname" optional="hide"/>
+                <field name="item_id" optional="hide"/>
+                <field name="itemcode" optional="hide"/>
+                <field name="itemname" optional="hide"/>
+                <field name="fromts" optional="hide"/>
+                <field name="tots" optional="hide"/>
+                <field name="material_id" optional="hide"/>
                 <field name="materialcode"/>
                 <field name="materialname"/>
-                <field name="bom_quantity"/>
-                <field name="actual_quantity"/>
-                <field name="quantity_variance"/>
-                <field name="cip"/>
-                <field name="cop"/>
-                <field name="plan_quantity_status"/>
-                <field name="bom_quantity_status"/>
-                <field name="order_quantity_status"/>
-                <field name="cleanliness_status"/>
-                <field name="operating_status"/>
-                <field name="cross_contamination"/>
+                <field name="bom_quantity" optional="hide"/>
+                <field name="actual_quantity" optional="hide"/>
+                <field name="quantity_variance" optional="hide"/>
+                <field name="cip" optional="hide"/>
+                <field name="cop" optional="hide"/>
+                <field name="plan_quantity_status" optional="hide"/>
+                <field name="bom_quantity_status" optional="hide"/>
+                <field name="order_quantity_status" optional="hide"/>
+                <field name="cleanliness_status" optional="hide"/>
+                <field name="operating_status" optional="hide"/>
+                <field name="cross_contamination" optional="hide"/>
                 <field name="final_result"/>
-                <field name="operator"/>
+                <field name="operator" optional="hide"/>
                 <field name="note"/>
-                <field name="allowed_item_ids" invisible="1"/>
-                <field name="allowed_material_ids" invisible="1"/>
+                <field name="allowed_item_ids" optional="hide"/>
+                <field name="allowed_material_ids" optional="hide"/>
             </tree>
         </field>
     </record>
