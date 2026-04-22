@@ -7,9 +7,9 @@
             <field name="arch" type="xml">
                 <form string="Thông số cân định lượng">
                     <sheet>
-                        <field name="valid_item_ids" invisible="1"/>
+                        <!-- <field name="valid_item_ids" invisible="1"/> -->
                         <field name="valid_material_ids" invisible="1"/>
-                        <field name="monitoring_id" invisible="1"/>
+                        <field name="header_id" invisible="1"/>
                         <field name="line_id" invisible="1"/>
 
                         <div class="oe_title" invisible="not line_id">
@@ -22,11 +22,11 @@
                         <group>
                             <group string="Thông tin sản phẩm">
                                 <field name="log_datetime"/>
-                                <field name="item_id" 
+                                <!-- <field name="item_id" 
                                        domain="[('id', 'in', valid_item_ids)]"
                                        options="{'no_create': True, 'no_open': True}"/>
                                 <field name="fromts"/>
-                                <field name="tots"/>
+                                <field name="tots"/> -->
                             </group>
                             
                             <group string="Thông tin nguyên liệu">
@@ -58,7 +58,9 @@
                         </group>
                     </sheet>
                     <footer>
-                        <button string="Lưu dữ liệu" name="action_confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                        
+                        <button string="Lưu &amp; Đóng" name="action_confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Lưu &amp; Tạo mới" name="action_confirm_and_new" type="object" class="btn-primary"/>
                         <button string="Đóng" class="btn-secondary" special="cancel" data-hotkey="z"/>
                     </footer>
                 </form>

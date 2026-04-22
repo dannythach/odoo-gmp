@@ -16,11 +16,23 @@
         <field name="arch" type="xml">
             <tree string="Danh sách giám sát cân">
                 <field name="log_date"/>
+                <field name="productionplan_id"/>
                 <field name="productionplancode"/>
                 <field name="productionplanfactory"/>
+                <field name="line_id"/>
                 <field name="linecode"/>
+                <field name="area"/>
+                <field name="shift_id"/>
                 <field name="shiftname"/>
+                <field name="group"/>
+                <field name="item_id"/>
+                <field name="itemcode"/>
+                <field name="itemname"/>
+                <field name="fromts"/>
+                <field name="tots"/>
                 <field name="productionplanname"/>
+                <field name="valid_item_ids"/>
+                <field name="valid_material_ids"/>
             </tree>
         </field>
     </record>
@@ -43,11 +55,18 @@
                                    placeholder="Chọn kế hoạch theo ngày..."/>
                             <field name="productionplancode" readonly="1"/>
                             <field name="productionplanfactory" readonly="1"/>
+                            <field name="line_id" options="{'no_create': True}"/>
+                            <field name="area"/>
                         </group>
                         
                         <group name="right_header">
-                            <field name="line_id" options="{'no_create': True}"/>
                             <field name="shift_id" options="{'no_create': True}"/>
+                            <field name="group"/>
+                            <field name="item_id" domain="[('id', 'in', valid_item_ids)]"/>
+                            <field name="itemcode" invisible="1"/>
+                            <field name="itemname"/>
+                            <field name="fromts" readonly="1"/>
+                            <field name="tots" readonly="1"/>
                             <field name="productionplanname" readonly="1"/>
                             <field name="valid_item_ids" invisible="1"/>
                             <field name="valid_material_ids" invisible="1"/>
@@ -56,42 +75,54 @@
 
                     <notebook>
                         <page string="Chi tiết cân định lượng" name="weighing_details">
+                            <div class="d-flex align-items-center gap-2 mb-2 p-2 border rounded bg-light">
+                                <button name="action_open_weighing_wizard"
+                                            type="object"
+                                            icon="fa-plus"
+                                            class="btn btn-primary"
+                                            style="
+                                                position: fixed;
+                                                bottom: 30px;
+                                                right: 30px;
+                                                border-radius: 50%;
+                                                width: 50px;
+                                                height: 50px;
+                                                z-index: 1000;
+                                            "/>
+                                
+                                <span class="text-muted">
+                                    Thêm dòng
+                                </span>
+                            </div>
                             <!-- Danh sách dòng -->
                             <field name="line_ids">
-                                <tree delete="0" editable="bottom"> 
-                                    <control>
-                                        <create name="add_line_control" string="Thêm dòng (Web)"/>
-                                        <button name="action_open_weighing_wizard" 
-                                                string="Thêm dòng (Mobile)" 
-                                                type="object" 
-                                                class="btn-primary"/>
-                                    </control>
-                                    <field name="log_datetime" 
-                                                width="300px"
-                                                options="{'format': 'HH:mm:ss'}" 
-                                                optional="show"/>
-                                    <field name="item_id" options="{'no_create': True}"/>
-                                    <field name="fromts"/>
-                                    <field name="tots"/>
-                                    <field name="material_id" options="{'no_create': True}"/>
-                                    <field name="materialname" readonly="1"/>
-                                    <field name="uom_id" options="{'no_create': True}"/>
-                                    <field name="lot_code"/>
-                                    <field name="batch_code"/>
-                                    <field name="bom_quantity" sum="Tổng"/>
-                                    <field name="actual_quantity" sum="Tổng"/>
-                                    <field name="quantity_variance" sum="Tổng"/>
-                                    <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'"/>
-                                    
+                                <tree delete="0" create="0" editable="bottom"> 
                                     <button name="action_edit_line" 
                                             type="object" 
                                             icon="fa-pencil" 
                                             class="btn-secondary"/>
+                                    
+                                    <field name="log_datetime" 
+                                            string="Thời gian"
+                                            widget="datetime"
+                                            options="{'format': 'dd/MM/yyyy HH:mm:ss'}" 
+                                            optional="show"
+                                            readonly="1"/>
+                                    <field name="material_id" domain="[('id', 'in', parent.valid_material_ids)]" readonly="1"/>
+                                    <field name="materialname" readonly="1" optional="hide"/>
+                                    <field name="uom_id" options="{'no_create': True}" readonly="1"/>
+                                    <field name="lot_code" readonly="1"/>
+                                    <field name="batch_code" readonly="1"/>
+                                    <field name="bom_quantity" sum="Tổng" readonly="1"/>
+                                    <field name="actual_quantity" sum="Tổng" readonly="1"/>
+                                    <field name="quantity_variance" sum="Tổng" readonly="1"/>
+                                    <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1"/>
+                                    <field name="note" optional="hide" readonly="1"/>
                                             
-                                    <button name="unlink" 
+                                    <!-- <button name="unlink" 
                                             type="object" 
                                             icon="fa-trash text-danger" 
-                                            confirm="Bạn có chắc chắn muốn xóa dòng này?"/>
+                                            confirm="Bạn có chắc chắn muốn xóa dòng này?"/> -->
                                 </tree>
                             </field>
                         </page>

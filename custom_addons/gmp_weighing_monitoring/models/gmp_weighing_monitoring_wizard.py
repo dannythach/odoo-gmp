@@ -4,7 +4,7 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
     _name = "gmp.weighing.monitoring.wizard"
     _description = "Chi tiết cân định lượng (Lines)"
 
-    monitoring_id = fields.Many2one('gmp.weighing.monitoring', string="Phiếu gốc")
+    header_id = fields.Many2one('gmp.weighing.monitoring', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
     line_id = fields.Many2one('gmp.weighing.monitoring.line', string="Dòng đang sửa")
@@ -26,10 +26,10 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
     log_datetime = fields.Datetime(string="Thời gian", default=fields.Datetime.now, required=True)
 
     # Sản phẩm & Nguyên liệu
-    item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
-    itemcode = fields.Char(related="item_id.itemcode", readonly=True)
-    fromts = fields.Integer(string="Từ TS", readonly=True)
-    tots = fields.Integer(string="Đến TS", readonly=True)
+    # item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
+    # itemcode = fields.Char(related="item_id.itemcode", readonly=True)
+    # fromts = fields.Integer(string="Từ TS", readonly=True)
+    # tots = fields.Integer(string="Đến TS", readonly=True)
     
     material_id = fields.Many2one('gmp.oitm', string="Nguyên phụ liệu", required=True)
     materialcode = fields.Char(related="material_id.itemcode", readonly=True)
@@ -48,18 +48,18 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
 
     @api.onchange('item_id', 'material_id', 'actual_quantity', 'bom_quantity')
     def _onchange_load_data(self):
-        plan = self.monitoring_id.productionplan_id
+        plan = self.header_id.productionplan_id
         
-        # 1. LOAD FROMTS, TOTS
-        if plan and self.item_id:
-            prod_detail = self.env['base.daily.production.plan.detail'].search([
-                ('docentry', '=', plan.docentry),
-                ('u_itemcode', '=', self.item_id.itemcode)
-            ], limit=1, order='id asc')
-            self.fromts = prod_detail.u_fromts if prod_detail else 0
-            self.tots = prod_detail.u_tots if prod_detail else 0
-        else:
-            self.fromts = self.tots = 0 
+        # # 1. LOAD FROMTS, TOTS
+        # if plan and self.item_id:
+        #     prod_detail = self.env['base.daily.production.plan.detail'].search([
+        #         ('docentry', '=', plan.docentry),
+        #         ('u_itemcode', '=', self.item_id.itemcode)
+        #     ], limit=1, order='id asc')
+        #     self.fromts = prod_detail.u_fromts if prod_detail else 0
+        #     self.tots = prod_detail.u_tots if prod_detail else 0
+        # else:
+        #     self.fromts = self.tots = 0 
 
         # 2. LOAD UOM & BOM
         if self.material_id:
@@ -84,11 +84,11 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
         
         # Chuẩn bị dữ liệu để lưu
         vals = {
-            'monitoring_id': self.monitoring_id.id,
+            'header_id': self.header_id.id,
             'log_datetime': self.log_datetime,
-            'item_id': self.item_id.id,
-            'fromts': self.fromts,
-            'tots': self.tots,
+            # 'item_id': self.item_id.id,
+            # 'fromts': self.fromts,
+            # 'tots': self.tots,
             'material_id': self.material_id.id,
             'uom_id': self.uom_id.id,
             'lot_code': self.lot_code,
@@ -120,9 +120,28 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_monitoring_id': self.id,
-                'default_valid_item_ids': self.valid_item_ids.ids,
+                'default_header_id': self.id,
+                # 'default_valid_item_ids': self.valid_item_ids.ids,
                 'default_valid_material_ids': self.valid_material_ids.ids,
                 'default_line_id': False,
+            }
+        }
+
+    def action_confirm_and_new(self):
+        self.ensure_one()
+
+        # 1. Gọi logic save hiện tại
+        self.action_confirm()
+
+        # 2. Reset lại wizard (mở lại form mới)
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'gmp.weighing.monitoring.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_header_id': self.header_id.id,
+                # 'default_valid_item_ids': [(6, 0, self.valid_item_ids.ids)],
+                'default_valid_material_ids': [(6, 0, self.valid_material_ids.ids)],
             }
         }

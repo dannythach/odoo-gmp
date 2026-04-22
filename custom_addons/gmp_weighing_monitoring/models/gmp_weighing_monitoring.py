@@ -33,13 +33,32 @@ class GmpWeighingMonitoring(models.Model):
     linecode = fields.Char(related="line_id.code", string="Mã dây chuyền", readonly=True)
     linename = fields.Char(related="line_id.name", string="Tên dây chuyền", readonly=True)
 
+    area = fields.Char(string="Khu vực")
+
     shift_id = fields.Many2one(comodel_name="base.shift", string="Ca", required=True)
     shiftcode = fields.Char(related="shift_id.code", string="Mã ca", readonly=True)
     shiftname = fields.Char(related="shift_id.name", string="Tên ca", readonly=True)
 
+    group = fields.Char(string="Tổ")
+
+    item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
+    itemcode = fields.Char(related="item_id.itemcode", readonly=True)
+    itemname = fields.Char(related="item_id.itemname", readonly=True)
+
+    fromts = fields.Integer(
+        string="Từ TS", 
+        compute="_compute_header_ts_values", # Tên hàm ở đây
+        store=True
+    )
+    tots = fields.Integer(
+        string="Đến TS", 
+        compute="_compute_header_ts_values", # Tên hàm ở đây
+        store=True
+    )
+
     line_ids = fields.One2many(
         comodel_name="gmp.weighing.monitoring.line",
-        inverse_name="monitoring_id",
+        inverse_name="header_id",
         string="Chi tiết các dòng cân"
     )
 
@@ -93,7 +112,29 @@ class GmpWeighingMonitoring(models.Model):
             ])
             codes = list(set([str(code).strip() for code in materials.mapped('materialcode') if code]))
             items = self.env['gmp.oitm'].search([('itemcode', 'in', codes)])
-            record.valid_material_ids = items 
+            record.valid_material_ids = items
+    
+    @api.depends('item_id', 'productionplan_id', 'line_id', 'shift_id')
+    def _compute_header_ts_values(self): # Tên hàm phải khớp với khai báo trên field
+        for record in self:
+            if not record.item_id or not record.productionplan_id:
+                record.fromts = 0
+                record.tots = 0
+                continue
+
+            plan_detail = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', record.productionplan_id.docentry),
+                ('u_itemcode', '=', record.item_id.itemcode),
+                ('u_oriline', '=', record.line_id.code),
+                ('u_shift', '=', record.shift_id.code)
+            ], limit=1)
+
+            if plan_detail:
+                record.fromts = plan_detail.u_fromts or 0
+                record.tots = plan_detail.u_tots or 0
+            else:
+                record.fromts = 0
+                record.tots = 0
 
     # --- HÀM MỞ WIZARD (CỐ ĐỊNH LỖI TRÊN HEADER) ---
     def action_open_weighing_wizard(self):
@@ -106,7 +147,7 @@ class GmpWeighingMonitoring(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_monitoring_id': self.id,
+                'default_header_id': self.id,
                 'default_valid_item_ids': self.valid_item_ids.ids,
                 'default_valid_material_ids': self.valid_material_ids.ids,
                 'default_line_id': False,
@@ -118,12 +159,8 @@ class GmpWeighingMonitoringLine(models.Model):
     _name = "gmp.weighing.monitoring.line"
     _description = "Chi tiết cân định lượng (Lines)"
 
-    monitoring_id = fields.Many2one('gmp.weighing.monitoring', ondelete="cascade")
+    header_id = fields.Many2one('gmp.weighing.monitoring', ondelete="cascade")
     log_datetime = fields.Datetime(string="Thời gian", default=fields.Datetime.now, required=True)
-    item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
-    itemcode = fields.Char(related="item_id.itemcode", readonly=True)
-    fromts = fields.Integer(string="Từ TS", readonly=True)
-    tots = fields.Integer(string="Đến TS", readonly=True)
     material_id = fields.Many2one('gmp.oitm', string="Nguyên phụ liệu", required=True)
     materialcode = fields.Char(related="material_id.itemcode", readonly=True)
     materialname = fields.Char(related="material_id.itemname", readonly=True)
@@ -135,6 +172,37 @@ class GmpWeighingMonitoringLine(models.Model):
     quantity_variance = fields.Float(string="Chênh lệch", compute="_compute_quantity_variance", store=True)
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     note = fields.Text(string="Ghi chú")
+
+
+    @api.onchange('material_id')
+    def _onchange_material_id_load_data(self):
+        for record in self:
+            # reset
+            record.uom_id = False
+            record.bom_quantity = 0
+
+            if not record.material_id:
+                return
+
+            # 1. Load đơn vị tính từ item master
+            record.uom_id = self.env['gmp.ouom'].search([('uomcode', '=', self.material_id.iuomcode)], limit=1)
+
+            # 2. Lấy header
+            header = record.header_id or self.env['gmp.weighing.monitoring'].browse(
+                self._context.get('active_id')
+            )
+
+            if not header or not header.productionplan_id or not record.item_id:
+                return
+
+            # 3. Lấy định mức từ BOM / material detail
+            material_detail = self.env['base.material.detail'].search([
+                ('docnum', '=', header.productionplan_id.docnum),
+                ('materialcode', '=', record.material_id.itemcode), # nếu có field này
+            ], limit=1)
+
+            if material_detail:
+                record.bom_quantity = material_detail.materialqty or 0
 
     @api.depends("bom_quantity", "actual_quantity")
     def _compute_quantity_variance(self):
@@ -151,9 +219,8 @@ class GmpWeighingMonitoringLine(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_monitoring_id': self.monitoring_id.id,
+                'default_header_id': self.header_id.id,
                 'default_line_id': self.id,
-                'default_item_id': self.item_id.id,
                 'default_material_id': self.material_id.id,
                 'default_actual_quantity': self.actual_quantity,
                 'default_lot_code': self.lot_code,
@@ -161,8 +228,8 @@ class GmpWeighingMonitoringLine(models.Model):
                 'default_result': self.result,
                 'default_note': self.note,
                 'default_log_datetime': self.log_datetime,
-                'default_valid_item_ids': self.monitoring_id.valid_item_ids.ids,
-                'default_valid_material_ids': self.monitoring_id.valid_material_ids.ids,
+                'default_valid_item_ids': self.header_id.valid_item_ids.ids,
+                'default_valid_material_ids': self.header_id.valid_material_ids.ids,
             }
         }
     
@@ -176,6 +243,7 @@ class GmpWeighingMonitoringLine(models.Model):
         monitoring = self.env['gmp.weighing.monitoring'].browse(self._context.get('active_id'))
         if not monitoring:
             # Trường hợp bản ghi mới chưa lưu, lấy qua field Many2one
-            monitoring = self.monitoring_id
+            monitoring = self.header_id
             
         return monitoring.action_open_weighing_wizard()
+
