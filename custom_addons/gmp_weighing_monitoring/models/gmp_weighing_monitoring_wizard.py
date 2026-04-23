@@ -43,7 +43,14 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
     actual_quantity = fields.Float(string="SL Thực cân", required=True)
     quantity_variance = fields.Float(string="Chênh lệch", readonly=True)
     
+    post_weighing_storage = fields.Selection([("Good", "Tốt"), ("Bad", "Kém")], string="Bảo quản sau cân", default="Good")
+    post_weighing_identification = fields.Selection([("C", "C"), ("K", "K")], string="Nhận diện sau cân", default="C")
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
+    operator = fields.Many2one(
+        comodel_name="res.users",
+        string="Người vận hành",
+        default=lambda self: self.env.user
+    )
     note = fields.Text(string="Ghi chú")
 
     @api.onchange('item_id', 'material_id', 'actual_quantity', 'bom_quantity')
@@ -95,7 +102,11 @@ class GmpWeighingMonitoringWizard(models.TransientModel):
             'batch_code': self.batch_code,
             'bom_quantity': self.bom_quantity,
             'actual_quantity': self.actual_quantity,
+            'quantity_variance': self.quantity_variance,
+            'post_weighing_storage': self.post_weighing_storage,
+            'post_weighing_identification': self.post_weighing_identification,
             'result': self.result,
+            'operator': self.operator.id,
             'note': self.note,
         }
 

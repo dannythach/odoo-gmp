@@ -42,19 +42,22 @@ class GmpWeighingMonitoring(models.Model):
     group = fields.Char(string="Tổ")
 
     item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
-    itemcode = fields.Char(related="item_id.itemcode", readonly=True)
-    itemname = fields.Char(related="item_id.itemname", readonly=True)
+    itemcode = fields.Char(related="item_id.itemcode", string="Mã sản phẩm", readonly=True)
+    itemname = fields.Char(related="item_id.itemname", string="Tên sản phẩm", readonly=True)
 
     fromts = fields.Integer(
-        string="Từ TS", 
+        string="Từ", 
         compute="_compute_header_ts_values", # Tên hàm ở đây
         store=True
     )
     tots = fields.Integer(
-        string="Đến TS", 
+        string="Đến", 
         compute="_compute_header_ts_values", # Tên hàm ở đây
         store=True
     )
+
+    fromts_display = fields.Float(string="Từ", compute="_compute_time_display")
+    tots_display = fields.Float(string="Đến", compute="_compute_time_display")
 
     line_ids = fields.One2many(
         comodel_name="gmp.weighing.monitoring.line",
@@ -136,6 +139,27 @@ class GmpWeighingMonitoring(models.Model):
                 record.fromts = 0
                 record.tots = 0
 
+    @api.depends('fromts', 'tots')
+    def _compute_time_display(self):
+        for record in self:
+            # Giả sử 930 nghĩa là 9h30p
+            # Ta tách: 930 // 100 = 9 giờ; 930 % 100 = 30 phút
+            # Giá trị float = 9 + (30/60) = 9.5
+            
+            if record.fromts:
+                hours = record.fromts // 100
+                minutes = record.fromts % 100
+                record.fromts_display = hours + (minutes / 60.0)
+            else:
+                record.fromts_display = 0.0
+                
+            if record.tots:
+                hours = record.tots // 100
+                minutes = record.tots % 100
+                record.tots_display = hours + (minutes / 60.0)
+            else:
+                record.tots_display = 0.0            
+
     # --- HÀM MỞ WIZARD (CỐ ĐỊNH LỖI TRÊN HEADER) ---
     def action_open_weighing_wizard(self):
         """Hàm mở Wizard cho nút Thêm dòng nhanh (Mobile)"""
@@ -170,7 +194,14 @@ class GmpWeighingMonitoringLine(models.Model):
     bom_quantity = fields.Float(string="SL Định mức")
     actual_quantity = fields.Float(string="SL Thực cân", required=True)
     quantity_variance = fields.Float(string="Chênh lệch", compute="_compute_quantity_variance", store=True)
+    post_weighing_storage = fields.Selection([("Good", "Tốt"), ("Bad", "Kém")], string="Bảo quản sau cân", default="Good")
+    post_weighing_identification = fields.Selection([("C", "C"), ("K", "K")], string="Nhận diện sau cân", default="C")
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
+    operator = fields.Many2one(
+        comodel_name="res.users",
+        string="Người vận hành",
+        default=lambda self: self.env.user
+    )
     note = fields.Text(string="Ghi chú")
 
 
@@ -225,7 +256,10 @@ class GmpWeighingMonitoringLine(models.Model):
                 'default_actual_quantity': self.actual_quantity,
                 'default_lot_code': self.lot_code,
                 'default_batch_code': self.batch_code,
+                'default_post_weighing_storage': self.post_weighing_storage,
+                'default_post_weighing_identification': self.post_weighing_identification,
                 'default_result': self.result,
+                'default_operator': self.operator.id,
                 'default_note': self.note,
                 'default_log_datetime': self.log_datetime,
                 'default_valid_item_ids': self.header_id.valid_item_ids.ids,

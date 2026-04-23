@@ -22,17 +22,17 @@
                 <field name="line_id"/>
                 <field name="linecode"/>
                 <field name="area"/>
-                <field name="shift_id"/>
-                <field name="shiftname"/>
-                <field name="group"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftname" />
+                <field name="group" optional="hide"/>
                 <field name="item_id"/>
-                <field name="itemcode"/>
-                <field name="itemname"/>
-                <field name="fromts"/>
-                <field name="tots"/>
-                <field name="productionplanname"/>
-                <field name="valid_item_ids"/>
-                <field name="valid_material_ids"/>
+                <field name="itemcode" optional="hide"/>
+                <field name="itemname" optional="hide"/>
+                <field name="fromts_display" widget="float_time" optional="hide"/>
+                <field name="tots_display" widget="float_time" optional="hide"/>
+                <field name="productionplanname" optional="hide"/>
+                <field name="valid_item_ids" optional="hide"/>
+                <field name="valid_material_ids" optional="hide"/>
             </tree>
         </field>
     </record>
@@ -64,9 +64,11 @@
                             <field name="group"/>
                             <field name="item_id" domain="[('id', 'in', valid_item_ids)]"/>
                             <field name="itemcode" invisible="1"/>
-                            <field name="itemname"/>
-                            <field name="fromts" readonly="1"/>
-                            <field name="tots" readonly="1"/>
+                            <field name="itemname" invisible="1"/>
+                            <!-- <field name="fromts" readonly="1"/>
+                            <field name="tots" readonly="1"/> -->
+                            <field name="fromts_display" widget="float_time"/>
+                            <field name="tots_display" widget="float_time"/>
                             <field name="productionplanname" readonly="1"/>
                             <field name="valid_item_ids" invisible="1"/>
                             <field name="valid_material_ids" invisible="1"/>
@@ -116,7 +118,10 @@
                                     <field name="bom_quantity" sum="Tổng" readonly="1"/>
                                     <field name="actual_quantity" sum="Tổng" readonly="1"/>
                                     <field name="quantity_variance" sum="Tổng" readonly="1"/>
+                                    <field name="post_weighing_storage" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" optional="hide" readonly="1"/>
+                                    <field name="post_weighing_identification" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" optional="hide" readonly="1"/>
                                     <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1"/>
+                                    <field name="operator" optional="hide" readonly="1"/>
                                     <field name="note" optional="hide" readonly="1"/>
                                             
                                     <!-- <button name="unlink" 

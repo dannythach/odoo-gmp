@@ -43,17 +43,20 @@
                                 <field name="lot_code" placeholder="Nhập mã lô..."/>
                                 <field name="batch_code" placeholder="Nhập mã mẻ..."/>
                                 <field name="bom_quantity" readonly="1" force_save="1"/>
-                            </group>
-                            <group>
                                 <field name="actual_quantity"/>
                                 <field name="quantity_variance" readonly="1" force_save="1" 
                                        decoration-danger="quantity_variance != 0" 
                                        style="font-weight: bold;"/>
-                                <field name="result" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                            <group>
+                                <field name="post_weighing_storage" widget="radio" options="{'horizontal': true}"/>
+                                <field name="post_weighing_identification" widget="radio" options="{'horizontal': true}"/>
                             </group>
                         </group>
                         
-                        <group>
+                        <group string="Xác nhận">
+                            <field name="result" widget="radio" options="{'horizontal': true}"/>
+                            <field name="operator"/>
                             <field name="note" placeholder="Ghi chú chi tiết nếu có..."/>
                         </group>
                     </sheet>
