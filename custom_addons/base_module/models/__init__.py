@@ -5,3 +5,5 @@ from . import base_shift
 from . import base_line
 from . import gmp_oitm
 from . import gmp_ouom
+from . import base_material_type
+from . import base_equipment_type

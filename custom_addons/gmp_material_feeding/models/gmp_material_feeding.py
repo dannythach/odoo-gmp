@@ -1,14 +1,13 @@
 from odoo import models, fields, api
 
-class gmpmaterialfeeding(models.Model):
+class GmpMaterialFeeding(models.Model):
     _name = "gmp.material.feeding"
-    _description = "Cấp / nạp liệu chế biến"
+    _description = "Cấp liệu chế biến (Header)"
     _order = "log_date desc"
-    _rec_name = 'productionplanname'
+    _rec_name = 'productionplancode'
 
-    # --- THÔNG TIN HEADER ---
     log_date = fields.Date(
-        string="Ngày ghi nhận", 
+        string="Ngày ghi nhận",
         default=fields.Date.context_today,
         required=True
     )
@@ -18,36 +17,60 @@ class gmpmaterialfeeding(models.Model):
         string="Kế hoạch sản xuất (Plan)",
         required=True
     )
-    
-    productionplancode = fields.Integer(related="productionplan_id.docnum", string="Mã kế hoạch", readonly=True)
+
+    productionplancode = fields.Integer(related="productionplan_id.docnum", string="Số kế hoạch", store=True, readonly=True)
     productionplanname = fields.Char(related="productionplan_id.remark", string="Ghi chú kế hoạch", readonly=True)
     
     productionplanfactory = fields.Selection(
-        selection=[
-            ('01', 'Mì'), ('02', 'Phở'), ('03', 'Nêm'),
-            ('04', 'Đóng gói'), ('05', 'Nấu dầu - Soup trộn'),
-        ],
+        selection=[('01', 'Mì'), ('02', 'Phở'), ('03', 'Nêm'), ('04', 'Đóng gói'), ('05', 'Nấu dầu - Soup trộn')],
         string="Xưởng",
         compute="_compute_productionplanfactory",
-        store=True
+        store=True,
+        readonly=True
     )
 
     line_id = fields.Many2one(comodel_name="base.line", string="Dây chuyền", required=True)
     linecode = fields.Char(related="line_id.code", string="Mã dây chuyền", readonly=True)
     linename = fields.Char(related="line_id.name", string="Tên dây chuyền", readonly=True)
-    
+
+    area = fields.Char(string="Khu vực")
+
     shift_id = fields.Many2one(comodel_name="base.shift", string="Ca", required=True)
     shiftcode = fields.Char(related="shift_id.code", string="Mã ca", readonly=True)
     shiftname = fields.Char(related="shift_id.name", string="Tên ca", readonly=True)
 
-    # Quan hệ với bảng chi tiết
-    line_ids = fields.One2many(
-        'gmp.material.feeding.line', 
-        'header_id', 
-        string="Chi tiết nạp liệu"
+    group = fields.Char(string="Tổ")
+
+    item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
+    itemcode = fields.Char(related="item_id.itemcode", string="Mã sản phẩm", readonly=True)
+    itemname = fields.Char(related="item_id.itemname", string="Tên sản phẩm", readonly=True)
+
+    fromts = fields.Integer(
+        string="Từ", 
+        compute="_compute_header_ts_values", # Tên hàm ở đây
+        store=True
+    )
+    tots = fields.Integer(
+        string="Đến", 
+        compute="_compute_header_ts_values", # Tên hàm ở đây
+        store=True
     )
 
-    # Các trường ẩn để hỗ trợ domain lọc trong Line
+    fromts_display = fields.Float(string="Từ", compute="_compute_time_display")
+    tots_display = fields.Float(string="Đến", compute="_compute_time_display")
+
+    # Thêm trường Many2many để chọn nhiều nguyên liệu
+    material_type_ids = fields.Many2many(
+        'base.material.type', # Model danh mục (xem bên dưới)
+        string="Cấp nguyên phụ liệu"
+    )
+
+    line_ids = fields.One2many(
+        comodel_name="gmp.material.feeding.line",
+        inverse_name="header_id",
+        string="Chi tiết các dòng cân"
+    )
+
     valid_item_ids = fields.Many2many(
         comodel_name='gmp.oitm', 
         compute='_compute_valid_item_ids',
@@ -59,7 +82,7 @@ class gmpmaterialfeeding(models.Model):
         compute='_compute_valid_material_ids',
         string="Valid Materials"
     )
-
+    
     # --- CÁC HÀM COMPUTE ---
     @api.depends('productionplan_id')
     def _compute_productionplanfactory(self):
@@ -98,10 +121,53 @@ class gmpmaterialfeeding(models.Model):
             ])
             codes = list(set([str(code).strip() for code in materials.mapped('materialcode') if code]))
             items = self.env['gmp.oitm'].search([('itemcode', 'in', codes)])
-            record.valid_material_ids = items 
+            record.valid_material_ids = items
+    
+    @api.depends('item_id', 'productionplan_id', 'line_id', 'shift_id')
+    def _compute_header_ts_values(self): # Tên hàm phải khớp với khai báo trên field
+        for record in self:
+            if not record.item_id or not record.productionplan_id:
+                record.fromts = 0
+                record.tots = 0
+                continue
+
+            plan_detail = self.env['base.daily.production.plan.detail'].search([
+                ('docentry', '=', record.productionplan_id.docentry),
+                ('u_itemcode', '=', record.item_id.itemcode),
+                ('u_oriline', '=', record.line_id.code),
+                ('u_shift', '=', record.shift_id.code)
+            ], limit=1)
+
+            if plan_detail:
+                record.fromts = plan_detail.u_fromts or 0
+                record.tots = plan_detail.u_tots or 0
+            else:
+                record.fromts = 0
+                record.tots = 0
+
+    @api.depends('fromts', 'tots')
+    def _compute_time_display(self):
+        for record in self:
+            # Giả sử 930 nghĩa là 9h30p
+            # Ta tách: 930 // 100 = 9 giờ; 930 % 100 = 30 phút
+            # Giá trị float = 9 + (30/60) = 9.5
+            
+            if record.fromts:
+                hours = record.fromts // 100
+                minutes = record.fromts % 100
+                record.fromts_display = hours + (minutes / 60.0)
+            else:
+                record.fromts_display = 0.0
+                
+            if record.tots:
+                hours = record.tots // 100
+                minutes = record.tots % 100
+                record.tots_display = hours + (minutes / 60.0)
+            else:
+                record.tots_display = 0.0            
 
     # --- HÀM MỞ WIZARD (CỐ ĐỊNH LỖI TRÊN HEADER) ---
-    def action_open_weighing_wizard(self):
+    def action_open_material_feeding_wizard(self):
         """Hàm mở Wizard cho nút Thêm dòng nhanh (Mobile)"""
         self.ensure_one()
         return {
@@ -111,72 +177,192 @@ class gmpmaterialfeeding(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {
-                'default_monitoring_id': self.id,
+                'default_header_id': self.id,
                 'default_valid_item_ids': self.valid_item_ids.ids,
                 'default_valid_material_ids': self.valid_material_ids.ids,
                 'default_line_id': False,
             }
-        }        
+        }
 
-# --- MODEL CHI TIẾT (LINES) ---
-class gmpmaterialfeedingline(models.Model):
+
+class GmpMaterialFeedingLine(models.Model):
     _name = "gmp.material.feeding.line"
-    _description = "Chi tiết cấp / nạp liệu"
+    _description = "Cấp liệu chế biến (Lines)"
 
-    header_id = fields.Many2one('gmp.material.feeding', string="Feeding Reference", ondelete='cascade')
-    
+    header_id = fields.Many2one('gmp.material.feeding', ondelete="cascade")
     log_datetime = fields.Datetime(string="Thời gian", default=fields.Datetime.now, required=True)
-
-    # Thành phẩm
-    item_id = fields.Many2one('gmp.oitm', string="Sản phẩm", required=True)
-    fromts = fields.Integer(string="Từ TS", readonly=True)
-    tots = fields.Integer(string="Đến TS", readonly=True)
-
-    # Nguyên phụ liệu
     material_id = fields.Many2one('gmp.oitm', string="Nguyên phụ liệu", required=True)
+    materialcode = fields.Char(related="material_id.itemcode", readonly=True)
     materialname = fields.Char(related="material_id.itemname", readonly=True)
-    uom_id = fields.Many2one('gmp.ouom', string="ĐVT")
+    uom_id = fields.Many2one('gmp.ouom', string="Đơn vị tính", required=True)
+    lot_code = fields.Char(string="Mã lô SX")
+    batch_code = fields.Char(string="Mã mẻ")
+    bom_quantity = fields.Float(string="SL Định mức")
+    actual_quantity = fields.Float(string="SL Thực cân", required=True)
+    quantity_variance = fields.Float(string="Chênh lệch", compute="_compute_quantity_variance", store=True)
+     # Tình trạng bảo quản sau cân - định lượng
+    cip = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng vệ sinh tại chỗ cho hệ thống kín",
+        default="Pass"
+    )
+
+    # Nhân diện sau cân - định lượng
+    cop = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng tháo rời ra để vệ sinh (dao, khay, dụng cụ…)",
+        default="C"
+    )
+
+    plan_quantity_status = fields.Selection(
+        [
+            ("Pass", "Đạt"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Cấp liệu theo lệnh sản xuất",
+        default="Pass"
+    )
+
+    bom_quantity_status = fields.Selection(
+        [
+            ("Pass", "Đạt"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Cấp liệu theo đinh mức/BOM",
+        default="Pass"
+    )
+
+    order_quantity_status = fields.Selection(
+        [
+            ("Pass", "Đạt"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Cấp liệu theo trình tự",
+        default="Pass"
+    )
+
+    cleanliness_status = fields.Selection(
+        [
+            ("Pass", "Sạch"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Tình trạng vệ sinh ở khu vực cấp liệu",
+        default="Pass"
+    )
+
+    operating_status = fields.Selection(
+        [
+            ("Pass", "Đạt"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Thao tác cấp liệu",
+        default="Pass"
+    )
+
+    cross_contamination = fields.Selection(
+        [
+            ("Pass", "Đạt"),
+            ("Fail", "Không đạt"),
+        ],
+        string="Kiểm soát lây nhiễm chéo",
+        default="Pass"
+    )
     
-    # Định mức & Thực tế
-    bom_quantity = fields.Float(string="SL BOM")
-    actual_quantity = fields.Float(string="SL Thực tế", required=True)
-    quantity_variance = fields.Float(string="Chênh lệch", compute="_compute_variance", store=True)
-
-    # Trạng thái & Kết quả (Selection)
-    cip = fields.Selection([("C", "Đạt"), ("K", "Không đạt")], string="CIP", default="C")
-    cop = fields.Selection([("C", "Đạt"), ("K", "Không đạt")], string="COP", default="C")
-    cleanliness_status = fields.Selection([("S", "Sạch"), ("K", "Không đạt")], string="Vệ sinh", default="S")
-    operating_status = fields.Selection([("Đ", "Đạt"), ("K", "Không đạt")], string="Thao tác", default="Đ")
-    final_result = fields.Selection([("Đ", "Đạt"), ("K", "Không đạt")], string="Kết quả", default="Đ")
-
-    operator = fields.Many2one('res.users', string="Người nạp", default=lambda self: self.env.user)
+    result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
+    operator = fields.Many2one(
+        comodel_name="res.users",
+        string="Người vận hành",
+        default=lambda self: self.env.user
+    )
     note = fields.Text(string="Ghi chú")
 
-    @api.depends('actual_quantity', 'bom_quantity')
-    def _compute_variance(self):
-        for line in self:
-            line.quantity_variance = (line.actual_quantity or 0.0) - (line.bom_quantity or 0.0)
+    @api.onchange('material_id')
+    def _onchange_material_id_load_data(self):
+        for record in self:
+            # reset
+            record.uom_id = False
+            record.bom_quantity = 0
 
-    @api.onchange('item_id', 'material_id')
-    def _onchange_load_data(self):
-        if not self.header_id: return
-        
-        # Load FromTS/ToTS
-        if self.item_id and self.header_id.productionplan_id:
-            detail = self.env['base.daily.production.plan.detail'].search([
-                ('docentry', '=', self.header_id.productionplan_id.docentry),
-                ('u_itemcode', '=', self.item_id.itemcode)
+            if not record.material_id:
+                return
+
+            # 1. Load đơn vị tính từ item master
+            record.uom_id = self.env['gmp.ouom'].search([('uomcode', '=', self.material_id.iuomcode)], limit=1)
+
+            # 2. Lấy header
+            header = record.header_id or self.env['gmp.material.feeding'].browse(
+                self._context.get('active_id')
+            )
+
+            if not header or not header.productionplan_id or not record.item_id:
+                return
+
+            # 3. Lấy định mức từ BOM / material detail
+            material_detail = self.env['base.material.detail'].search([
+                ('docnum', '=', header.productionplan_id.docnum),
+                ('materialcode', '=', record.material_id.itemcode), # nếu có field này
             ], limit=1)
-            self.fromts = detail.u_fromts if detail else 0
-            self.tots = detail.u_tots if detail else 0
 
-        # Load BOM & UOM
-        if self.material_id:
-            if self.material_id.iuomcode:
-                self.uom_id = self.env['gmp.ouom'].search([('uomcode', '=', self.material_id.iuomcode)], limit=1)
+            if material_detail:
+                record.bom_quantity = material_detail.materialqty or 0
+
+    @api.depends("bom_quantity", "actual_quantity")
+    def _compute_quantity_variance(self):
+        for record in self:
+            record.quantity_variance = record.actual_quantity - record.bom_quantity
+
+    def action_edit_line(self):
+        """Hàm mở Wizard để sửa dòng hiện tại"""
+        self.ensure_one()
+        return {
+            'name': 'Chỉnh sửa chi tiết cấp liệu',
+            'type': 'ir.actions.act_window',
+            'res_model': 'gmp.material.feeding.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_header_id': self.header_id.id,
+                'default_line_id': self.id,
+                'default_material_id': self.material_id.id,
+                'default_actual_quantity': self.actual_quantity,
+                'default_lot_code': self.lot_code,
+                'default_batch_code': self.batch_code,
+                
+                'default_cip': self.cip,
+                'default_cop': self.cop,
+                'default_plan_quantity_status': self.plan_quantity_status,
+                'default_bom_quantity_status': self.bom_quantity_status,
+                'default_order_quantity_status': self.order_quantity_status,
+                'default_cleanliness_status': self.cleanliness_status,
+                'default_operating_status': self.operating_status,
+                'default_cross_contamination': self.cross_contamination,
+
+                'default_result': self.result,
+                'default_operator': self.operator.id,
+                'default_note': self.note,
+                'default_log_datetime': self.log_datetime,
+                'default_valid_item_ids': self.header_id.valid_item_ids.ids,
+                'default_valid_material_ids': self.header_id.valid_material_ids.ids,
+            }
+        }
+    
+    # --- HÀM BỔ SUNG ĐỂ SỬA LỖI XML ---
+    def action_open_material_feeding_wizard(self):
+        """
+        Hàm cầu nối: Khi bấm nút trong thẻ <control> của danh sách Line, 
+        nó sẽ gọi hàm của model cha (Header).
+        """
+        # Lấy context từ model cha để đảm bảo dữ liệu valid_ids được truyền đúng
+        monitoring = self.env['gmp.material.feeding'].browse(self._context.get('active_id'))
+        if not monitoring:
+            # Trường hợp bản ghi mới chưa lưu, lấy qua field Many2one
+            monitoring = self.header_id
             
-            material_bom = self.env['base.material.detail'].search([
-                ('materialcode', '=', self.material_id.itemcode),
-                ('docnum', '=', self.header_id.productionplan_id.docnum)
-            ], limit=1)
-            self.bom_quantity = material_bom.materialqty if material_bom else 0.0
+        return monitoring.action_open_material_feeding_wizard()
+

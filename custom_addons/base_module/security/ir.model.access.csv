@@ -1,8 +1,10 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_base_material_detail,base_material.detail,model_base_material_detail,base.group_user,1,1,1,1
-access_base_daily_production_plan,base_daily_production_plan,model_base_daily_production_plan,base.group_user,1,1,1,1
-access_base_daily_production_plan_detail,base_daily_production_plan_detail,model_base_daily_production_plan_detail,base.group_user,1,1,1,1
-access_base_line,base_line,model_base_line,base.group_user,1,1,1,1
-access_base_shift,base_shift,model_base_shift,base.group_user,1,1,1,1
+access_base_daily_production_plan,base.daily.production.plan,model_base_daily_production_plan,base.group_user,1,1,1,1
+access_base_daily_production_plan_detail,base.daily.production.plan.detail,model_base_daily_production_plan_detail,base.group_user,1,1,1,1
+access_base_line,base.line,model_base_line,base.group_user,1,1,1,1
+access_base_shift,base.shift,model_base_shift,base.group_user,1,1,1,1
 access_gmp_oitm_user,gmp.oitm,model_gmp_oitm,base.group_user,1,1,1,1
 access_gmp_ouom_user,gmp.ouom,model_gmp_ouom,base.group_user,1,1,1,1
+access_base_material_type,base.material.type,model_base_material_type,base.group_user,1,1,1,1
+access_base_equipment_type,base.equipment.type,model_base_equipment_type,base.group_user,1,1,1,1

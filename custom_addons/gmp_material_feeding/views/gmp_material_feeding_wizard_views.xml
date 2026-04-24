@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gmp_material_feeding_wizard_view_form" model="ir.ui.view">
+            <field name="name">gmp.material.feeding.wizard.form</field>
+            <field name="model">gmp.material.feeding.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Thông số cân định lượng">
+                    <sheet>
+                        <!-- <field name="valid_item_ids" invisible="1"/> -->
+                        <field name="valid_material_ids" invisible="1"/>
+                        <field name="header_id" invisible="1"/>
+                        <field name="line_id" invisible="1"/>
+
+                        <div class="oe_title" invisible="not line_id">
+                            <span class="badge rounded-pill text-bg-info" style="font-size: 14px;">Chế độ: Chỉnh sửa dòng cũ</span>
+                        </div>
+                        <div class="oe_title" invisible="line_id">
+                            <span class="badge rounded-pill text-bg-success" style="font-size: 14px;">Chế độ: Thêm dòng mới</span>
+                        </div>
+
+                        <group>
+                            <group string="Thông tin sản phẩm">
+                                <field name="log_datetime"/>
+                                <!-- <field name="item_id" 
+                                       domain="[('id', 'in', valid_item_ids)]"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="fromts"/>
+                                <field name="tots"/> -->
+                            </group>
+                            
+                            <group string="Thông tin nguyên liệu">
+                                <field name="material_id" 
+                                       domain="[('id', 'in', valid_material_ids)]"
+                                       options="{'no_create': True, 'no_open': True}"/>
+                                <field name="materialname"/>
+                                <field name="uom_id" options="{'no_create': True, 'no_open': True}"/>
+                            </group>
+                        </group>
+
+                        <group string="Kết quả cân thực tế">
+                            <group>
+                                <field name="lot_code" placeholder="Nhập mã lô..."/>
+                                <field name="batch_code" placeholder="Nhập mã mẻ..."/>
+                                <field name="bom_quantity" readonly="1" force_save="1"/>
+                                <field name="actual_quantity"/>
+                                <field name="quantity_variance" readonly="1" force_save="1" 
+                                       decoration-danger="quantity_variance != 0" 
+                                       style="font-weight: bold;"/>
+                            </group>
+                            <group>
+                                <field name="cip" widget="radio" options="{'horizontal': true}"/>
+                                <field name="cop" widget="radio" options="{'horizontal': true}"/>
+                                <field name="plan_quantity_status" widget="radio" options="{'horizontal': true}"/>
+                                <field name="bom_quantity_status" widget="radio" options="{'horizontal': true}"/>
+                                <field name="order_quantity_status" widget="radio" options="{'horizontal': true}"/>
+                                <field name="cleanliness_status" widget="radio" options="{'horizontal': true}"/>
+                                <field name="operating_status" widget="radio" options="{'horizontal': true}"/>
+                                <field name="cross_contamination" widget="radio" options="{'horizontal': true}"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Xác nhận">
+                            <field name="result" widget="radio" options="{'horizontal': true}"/>
+                            <field name="operator"/>
+                            <field name="note" placeholder="Ghi chú chi tiết nếu có..."/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        
+                        <button string="Lưu &amp; Đóng" name="action_confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Lưu &amp; Tạo mới" name="action_confirm_and_new" type="object" class="btn-primary"/>
+                        <button string="Đóng" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>

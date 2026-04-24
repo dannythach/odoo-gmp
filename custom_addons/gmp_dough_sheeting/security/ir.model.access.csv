@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_gmp_dough_sheeting,gmp.dough_sheeting,model_gmp_dough_sheeting,base.group_user,1,1,1,1
+access_gmp_dough_sheeting,gmp.dough.sheeting,model_gmp_dough_sheeting,base.group_user,1,1,1,1
+access_gmp_dough_sheeting_line,gmp.dough.sheeting.line,model_gmp_dough_sheeting_line,base.group_user,1,1,1,1
+access_gmp_dough_sheeting_wizard,gmp.dough.sheeting.wizard,model_gmp_dough_sheeting_wizard,base.group_user,1,1,1,1
+

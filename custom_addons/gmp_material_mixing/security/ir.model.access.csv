@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_gmp_material_mixing,gmp.material_mixing,model_gmp_material_mixing,base.group_user,1,1,1,1
+access_gmp_material_mixing,gmp.material.mixing,model_gmp_material_mixing,base.group_user,1,1,1,1
+access_gmp_material_mixing_line,gmp.material.mixing.line,model_gmp_material_mixing_line,base.group_user,1,1,1,1
+access_gmp_material_mixing_wizard,gmp.material.mixing.wizard,model_gmp_material_mixing_wizard,base.group_user,1,1,1,1
+

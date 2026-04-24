@@ -1,138 +1,155 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-
-    <!-- Action -->
     <record id="action_gmp_material_feeding" model="ir.actions.act_window">
-        <field name="name">Cấp / nạp liệu chế biến</field>
+        <field name="name">Cấp liệu chế biến</field>
         <field name="res_model">gmp.material.feeding</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Menu -->
-    <!-- <menuitem id="menu_noodle_production_log_root" name="Nhật ký sản xuất mì" sequence="10"/> -->
-    <menuitem
-        id="menu_gmp_material_feeding"
-        name="Cấp / nạp liệu chế biến"
-        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_material_feeding"
-        sequence="2"
-    />
+    <menuitem id="menu_gmp_material_feeding" name="Cấp liệu chế biến" 
+              parent="gmp_weighing_monitoring.menu_noodle_production_log_root" action="action_gmp_material_feeding" sequence="2"/>
 
-    <!-- Tree view -->
     <record id="view_gmp_material_feeding_tree" model="ir.ui.view">
         <field name="name">gmp.material.feeding.tree</field>
         <field name="model">gmp.material.feeding</field>
         <field name="arch" type="xml">
-            <tree>
-                <field name="log_datetime"/>
-                <field name="log_date" optional="hide"/> 
-                <field name="productionplan_id" optional="hide"/>
+            <tree string="Danh sách cấp liệu">
+                <field name="log_date"/>
+                <field name="productionplan_id"/>
                 <field name="productionplancode"/>
-                <field name="productionplanname" optional="hide"/>
-                <field name="productionplanfactory" optional="hide"/>
-                <field name="line_id" optional="hide"/>
-                <field name="linecode" optional="hide"/>
-                <field name="linename" optional="hide"/>
+                <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="area"/>
                 <field name="shift_id" optional="hide"/>
-                <field name="shiftcode" optional="hide"/>
-                <field name="shiftname" optional="hide"/>
-                <field name="item_id" optional="hide"/>
+                <field name="shiftname" />
+                <field name="group" optional="hide"/>
+                <field name="item_id"/>
                 <field name="itemcode" optional="hide"/>
                 <field name="itemname" optional="hide"/>
-                <field name="fromts" optional="hide"/>
-                <field name="tots" optional="hide"/>
-                <field name="material_id" optional="hide"/>
-                <field name="materialcode"/>
-                <field name="materialname"/>
-                <field name="bom_quantity" optional="hide"/>
-                <field name="actual_quantity" optional="hide"/>
-                <field name="quantity_variance" optional="hide"/>
-                <field name="cip" optional="hide"/>
-                <field name="cop" optional="hide"/>
-                <field name="plan_quantity_status" optional="hide"/>
-                <field name="bom_quantity_status" optional="hide"/>
-                <field name="order_quantity_status" optional="hide"/>
-                <field name="cleanliness_status" optional="hide"/>
-                <field name="operating_status" optional="hide"/>
-                <field name="cross_contamination" optional="hide"/>
-                <field name="final_result"/>
-                <field name="operator" optional="hide"/>
-                <field name="note"/>
-                <field name="allowed_item_ids" optional="hide"/>
-                <field name="allowed_material_ids" optional="hide"/>
+                <field name="fromts_display" widget="float_time" optional="hide"/>
+                <field name="tots_display" widget="float_time" optional="hide"/>
+                <field name="material_type_ids"/>
+                <field name="productionplanname" optional="hide"/>
+                <field name="valid_item_ids" optional="hide"/>
+                <field name="valid_material_ids" optional="hide"/>
             </tree>
         </field>
     </record>
 
-    <!-- Form view -->
     <record id="view_gmp_material_feeding_form" model="ir.ui.view">
         <field name="name">gmp.material.feeding.form</field>
         <field name="model">gmp.material.feeding</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    
+                </header>
                 <sheet>
                     <group>
-                        <field name="log_datetime"/>
-                        <field name="log_date" invisible="1"/> 
-                        <field name="productionplan_id" 
-                            context="{'search_default_u_docdate': log_date}"
-                            domain="[('u_docdate', '=', log_date)]"
-                            options="{'no_create': True, 'no_open': True}"/>
-                        <field name="productionplancode"/>  
-                        <field name="productionplanname"/>
-                        <field name="productionplanfactory"/>
-                        <field name="line_id"/>
-                        <field name="linecode"/>
-                        <field name="linename"/>
-                        <field name="shift_id"/>
-                        <field name="shiftcode"/>
-                        <field name="shiftname"/>
-                        <field name="item_id" options="{'no_open': True}"/>
-                        <field name="itemcode"/>
-                        <field name="itemname"/>                        
-                        <field name="fromts"/>
-                        <field name="tots"/>
-                        <field name="material_id"/>
-                        <field name="materialcode"/>
-                        <field name="materialname"/>
-                        <field name="uom_id" options="{'no_open': True}"/>
-                        <field name="uomcode"/>
-                        <field name="uomname"/>                     
+                        <group name="left_header">
+                            <field name="log_date" string="Ngày ghi nhận"/>
+                            <field name="productionplan_id" 
+                                   options="{'no_create': True}"
+                                   domain="[('u_docdate', '=', log_date)]"
+                                   placeholder="Chọn kế hoạch theo ngày..."/>
+                            <field name="productionplancode" readonly="1"/>
+                            <field name="productionplanfactory" readonly="1"/>
+                            <field name="line_id" options="{'no_create': True}"/>
+                            <field name="area"/>
+                        </group>
+                        
+                        <group name="right_header">
+                            <field name="shift_id" options="{'no_create': True}"/>
+                            <field name="group"/>
+                            <field name="item_id" domain="[('id', 'in', valid_item_ids)]"/>
+                            <field name="itemcode" invisible="1"/>
+                            <field name="itemname" invisible="1"/>
+                            <!-- <field name="fromts" readonly="1"/>
+                            <field name="tots" readonly="1"/> -->
+                            <field name="fromts_display" widget="float_time"/>
+                            <field name="tots_display" widget="float_time"/>
+                            <field name="material_type_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                            <field name="productionplanname" readonly="1"/>
+                            <field name="valid_item_ids" invisible="1"/>
+                            <field name="valid_material_ids" invisible="1"/>
+                        </group>
                     </group>
 
-                    <group string="Cấp/nạp liệu chế biến">
-                        <field name="bom_quantity"/>
-                        <field name="actual_quantity"/>
-                        <field name="quantity_variance"/>
-                    </group>
+                    <notebook>
+                        <page string="Chi tiết cấp liệu" name="material_feeding_details">
+                            <div class="d-flex align-items-center gap-2 mb-2 p-2 border rounded bg-light">
+                                <button name="action_open_material_feeding_wizard"
+                                            type="object"
+                                            icon="fa-plus"
+                                            class="btn btn-primary"
+                                            style="
+                                                position: fixed;
+                                                bottom: 30px;
+                                                right: 30px;
+                                                border-radius: 50%;
+                                                width: 50px;
+                                                height: 50px;
+                                                z-index: 1000;
+                                            "/>
+                                
+                                <span class="text-muted">
+                                    Thêm dòng
+                                </span>
+                            </div>
+                            <!-- Danh sách dòng -->
+                            <field name="line_ids">
+                                <tree delete="0" create="0" editable="bottom"> 
+                                    <button name="action_edit_line" 
+                                            type="object" 
+                                            icon="fa-pencil" 
+                                            class="btn-secondary"/>
+                                    
+                                    <field name="log_datetime" 
+                                            string="Thời gian"
+                                            widget="datetime"
+                                            options="{'format': 'dd/MM/yyyy HH:mm:ss'}" 
+                                            optional="show"
+                                            readonly="1"/>
+                                    <field name="material_id" domain="[('id', 'in', parent.valid_material_ids)]" readonly="1"/>
+                                    <field name="materialname" readonly="1" optional="hide"/>
+                                    <field name="uom_id" options="{'no_create': True}" readonly="1"/>
+                                    <field name="lot_code" readonly="1"/>
+                                    <field name="batch_code" readonly="1"/>
+                                    <field name="bom_quantity" sum="Tổng" readonly="1"/>
+                                    <field name="actual_quantity" sum="Tổng" readonly="1"/>
+                                    <field name="quantity_variance" sum="Tổng" readonly="1"/>
 
-                    <group string="Thiết bị, công cụ, dụng cụ">
-                        <field name="cip"/>
-                        <field name="cop"/>
-                    </group>
+                                    <field name="cip" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="cop" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="plan_quantity_status" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="bom_quantity_status" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="order_quantity_status" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="cleanliness_status" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="operating_status" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
+                                    <field name="cross_contamination" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1" optional="hide"/>
 
-                    <group string="Cấp liệu theo">
-                        <field name="plan_quantity_status"/>
-                        <field name="bom_quantity_status"/>
-                        <field name="order_quantity_status"/>
-                    </group>
-
-                    <group string="Khu vực và thao tác cấp liệu">
-                        <field name="cleanliness_status"/>
-                        <field name="operating_status"/>
-                        <field name="cross_contamination"/>
-                    </group>
-
-                    <group>
-                        <field name="final_result"/>
-                        <field name="operator"/>
-                        <field name="note"/>
-                        <field name="allowed_item_ids" invisible="1"/>
-                        <field name="allowed_material_ids" invisible="1"/>
-                    </group>
+                                    <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1"/>
+                                    <field name="operator" optional="hide" readonly="1"/>
+                                    <field name="note" optional="hide" readonly="1"/>
+                                            
+                                    <!-- <button name="unlink" 
+                                            type="object" 
+                                            icon="fa-trash text-danger" 
+                                            confirm="Bạn có chắc chắn muốn xóa dòng này?"/> -->
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <page string="Thông tin khác" name="other_info">
+                            <group>
+                                <field name="linecode" readonly="1"/>
+                                <field name="shiftcode" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>
     </record>
-
 </odoo>

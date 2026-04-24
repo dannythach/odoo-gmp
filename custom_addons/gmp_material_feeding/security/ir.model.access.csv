@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_material_feeding,gmp.material.feeding,model_gmp_material_feeding,base.group_user,1,1,1,1
+access_gmp_material_feeding_line,gmp.material.feeding.line,model_gmp_material_feeding_line,base.group_user,1,1,1,1
+access_gmp_material_feeding_wizard,gmp.material.feeding.wizard,model_gmp_material_feeding_wizard,base.group_user,1,1,1,1
+
