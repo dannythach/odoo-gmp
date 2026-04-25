@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_cutting,gmp.cutting,model_gmp_cutting,base.group_user,1,1,1,1
+access_gmp_cutting_line,gmp.cutting.line,model_gmp_cutting_line,base.group_user,1,1,1,1
+access_gmp_cutting_wizard,gmp.cutting.wizard,model_gmp_cutting_wizard,base.group_user,1,1,1,1
+

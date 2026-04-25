@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_slitting_waving,gmp.slitting.waving,model_gmp_slitting_waving,base.group_user,1,1,1,1
+access_gmp_slitting_waving_line,gmp.slitting.waving.line,model_gmp_slitting_waving_line,base.group_user,1,1,1,1
+access_gmp_slitting_waving_wizard,gmp.slitting.waving.wizard,model_gmp_slitting_waving_wizard,base.group_user,1,1,1,1
+

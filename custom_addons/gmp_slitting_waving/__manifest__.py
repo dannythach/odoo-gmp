@@ -8,6 +8,7 @@
     "depends": ["base", "base_module"],
     "data": [
         "security/ir.model.access.csv",
+        'views/gmp_slitting_waving_wizard_views.xml',
         "views/gmp_slitting_waving_views.xml",
     ],
     "installable": True,

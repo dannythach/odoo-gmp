@@ -8,6 +8,7 @@
     "depends": ["base", "base_module"],
     "data": [
         "security/ir.model.access.csv",
+        'views/gmp_drying_wizard_views.xml',
         "views/gmp_drying_views.xml",
     ],
     "installable": True,

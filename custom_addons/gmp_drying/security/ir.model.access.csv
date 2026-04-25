@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_drying,gmp.drying,model_gmp_drying,base.group_user,1,1,1,1
+access_gmp_drying_line,gmp.drying.line,model_gmp_drying_line,base.group_user,1,1,1,1
+access_gmp_drying_wizard,gmp.drying.wizard,model_gmp_drying_wizard,base.group_user,1,1,1,1
+
