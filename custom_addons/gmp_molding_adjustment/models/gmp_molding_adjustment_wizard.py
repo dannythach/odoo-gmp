@@ -1,24 +1,24 @@
 from odoo import models, fields, api
 
-class GmpSteammingWizard(models.TransientModel):
-    _name = "gmp.steamming.wizard"
+class GmpMoldingAdjustmentWizard(models.TransientModel):
+    _name = "gmp.molding.adjustment.wizard"
     _description = "Chi tiết (Lines)"
 
-    header_id = fields.Many2one('gmp.steamming', string="Phiếu gốc")
+    header_id = fields.Many2one('gmp.molding.adjustment', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
-    line_id = fields.Many2one('gmp.steamming.line', string="Dòng đang sửa")
+    line_id = fields.Many2one('gmp.molding.adjustment.line', string="Dòng đang sửa")
 
     # Many2many với relation riêng để tránh lỗi Table/Column
     valid_item_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_steamming_wizard_item_rel', 
+        'gmp_molding_adjustment_wizard_item_rel', 
         'wizard_id', 'item_id', 
         string='Sản phẩm hợp lệ'
     )
     valid_material_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_steamming_wizard_material_rel', 
+        'gmp_molding_adjustment_wizard_material_rel', 
         'wizard_id', 'material_id', 
         string='Nguyên liệu hợp lệ'
     )
@@ -27,13 +27,16 @@ class GmpSteammingWizard(models.TransientModel):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
     
-    temperature = fields.Float(string="Nhiệt độ (C)")
-    steamming_time = fields.Float(string="Thời gian hấp (p/s)")
-    vapor_pressurer = fields.Float(string="Áp suất hơi (bar)")
-    chamber_pressuer = fields.Float(string="Áp suất buồng hấp (kgf/cm2)")
-    gelatinization = fields.Float(string="Độ hồ hóa tinh bột (%)")
-    moisture = fields.Float(string="Độ ẩm mì sau hấp (%)")
-    wip_status = fields.Char(string="Tình trạng bán thành phẩm")
+    adjustment_stick_diameter = fields.Float(string="Đường kính đũa (mm)")
+    adjustment_stick_length = fields.Float(string="Chiều dài đũa (mm)")
+    distance_stick_mold = fields.Float(string="K/C chỉnh đũa & khuôn (mm)")
+    air_flow_rate = fields.Float(string="Hơi khí nén (m³/p)")
+    air_pressure = fields.Float(string="Hơi khí nén (bar)")
+    fan_speed = fields.Float(string="Vận tốc cánh quạt (v/p)")
+    fan_wind_speed = fields.Float(string="Vận tốc gió (m/s)")
+
+    # Tình trạng BTP sau sửa
+    sfp_status  = fields.Char(string="Tình trạng BTP sau sửa")
 
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     operator = fields.Many2one(
@@ -53,13 +56,15 @@ class GmpSteammingWizard(models.TransientModel):
             'lot_code': self.lot_code,
             'batch_code': self.batch_code,
             
-            'temperature': self.temperature,
-            'steamming_time': self.steamming_time,
-            'vapor_pressurer': self.vapor_pressurer,
-            'chamber_pressuer': self.chamber_pressuer,
-            'gelatinization': self.gelatinization,
-            'moisture': self.moisture,
-            'wip_status': self.wip_status,
+            'adjustment_stick_diameter': self.adjustment_stick_diameter,
+            'adjustment_stick_length': self.adjustment_stick_length,
+            'distance_stick_mold': self.distance_stick_mold,
+            'air_flow_rate': self.air_flow_rate,
+            'air_pressure': self.air_pressure,
+            'fan_speed': self.fan_speed,
+            'fan_wind_speed': self.fan_wind_speed,
+            
+            'sfp_status': self.sfp_status,
             
             'result': self.result,
             'operator': self.operator.id,
@@ -71,11 +76,11 @@ class GmpSteammingWizard(models.TransientModel):
             self.line_id.write(vals)
         else:
             # NẾU KHÔNG CÓ LINE_ID: Tạo dòng mới
-            self.env['gmp.steamming.line'].create(vals)
+            self.env['gmp.molding.adjustment.line'].create(vals)
             
         return {'type': 'ir.actions.act_window_close'}
     
-    def action_open_steamming_wizard(self):
+    def action_open_molding_adjustment_wizard(self):
         self.ensure_one()
         # Nếu là bản ghi mới (chưa có ID thực), Odoo sẽ tự động lưu khi gọi action này 
         # thông qua button type="object"
@@ -83,7 +88,7 @@ class GmpSteammingWizard(models.TransientModel):
         return {
             'name': 'Thêm dòng nhanh (Mobile)',
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.steamming.wizard',
+            'res_model': 'gmp.molding.adjustment.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
@@ -101,7 +106,7 @@ class GmpSteammingWizard(models.TransientModel):
         # 2. Reset lại wizard (mở lại form mới)
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.steamming.wizard',
+            'res_model': 'gmp.molding.adjustment.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {

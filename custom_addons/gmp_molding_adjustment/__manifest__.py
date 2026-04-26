@@ -8,6 +8,7 @@
     "depends": ["base", "base_module"],
     "data": [
         "security/ir.model.access.csv",
+        'views/gmp_molding_adjustment_wizard_views.xml',
         "views/gmp_molding_adjustment_views.xml",
     ],
     "installable": True,

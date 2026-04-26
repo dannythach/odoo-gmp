@@ -2,7 +2,7 @@ from odoo import models, fields, api
 
 class GmpSeasoningDipping(models.Model):
     _name = "gmp.seasoning.dipping"
-    _description = "Cắt định lượng (Header)"
+    _description = "Nhúng nước lèo (Header)"
     _order = "log_date desc"
     _rec_name = 'productionplancode'
 
@@ -59,11 +59,11 @@ class GmpSeasoningDipping(models.Model):
     fromts_display = fields.Float(string="Từ", compute="_compute_time_display")
     tots_display = fields.Float(string="Đến", compute="_compute_time_display")
 
-    noodle_piece = fields.Char(string="QC/Kich thước vắt mì (mm)")
-    cutter_id = fields.Char(string="Dao căt (Mã số)")
+    dipping_tank_id = fields.Char(string="Bồn nhúng (Mã số)")
+    broth_film = fields.Char(string="Màng tràn chứa nước lèo")
 
     line_ids = fields.One2many(
-        comodel_name="gmp.cutting.line",
+        comodel_name="gmp.seasoning.dipping.line",
         inverse_name="header_id",
         string="Chi tiết các dòng cân"
     )
@@ -181,19 +181,38 @@ class GmpSeasoningDipping(models.Model):
 
 class GmpSeasoningDippingLine(models.Model):
     _name = "gmp.seasoning.dipping.line"
-    _description = "Cắt định lượng (Lines)"
+    _description = "Nhúng nước lèo (Lines)"
 
     header_id = fields.Many2one('gmp.seasoning.dipping', ondelete="cascade")
     log_datetime = fields.Datetime(string="Thời gian", default=fields.Datetime.now, required=True)
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
     
-    noodle_length = fields.Float(string="Chiều dài sợi mì (cm)")
-    standard_weight = fields.Float(string="KL/TL quy định (g)")
-    actual_weight = fields.Float(string="KL/ TL đo (g)")
-    cutting_speed = fields.Float(string="Tốc độ dao cắt (lần/p)")
-    conveyor_speed = fields.Float(string="Vận tốc băng tải")
-    post_cutting_status = fields.Char(string="Tình trạng vắt mì sau cắt định lượng")
+    equipment_code = fields.Char(string="Mã số thiết bị")
+    soup_temperature = fields.Float(string="Nhiệt độ nước lèo (C)")
+    dipping_time = fields.Float(string="Thời gian nhúng (s)")
+    soup_rate = fields.Float(string="Lưu lượng nước lèo (ml/vắt)")
+    noodle_status = fields.Char(string="Tình trạng vắt sau nhúng/phun")
+
+    # Tình trạng bảo quản sau cân - định lượng
+    cip = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng vệ sinh tại chỗ cho hệ thống kín",
+        default="Pass"
+    )
+
+    # Nhân diện sau cân - định lượng
+    cop = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng tháo rời ra để vệ sinh (dao, khay, dụng cụ…)",
+        default="Pass"
+    )
     
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     operator = fields.Many2one(
@@ -236,12 +255,14 @@ class GmpSeasoningDippingLine(models.Model):
                 'default_lot_code': self.lot_code,
                 'default_batch_code': self.batch_code,
                 
-                'default_noodle_length': self.noodle_length,
-                'default_standard_weight': self.standard_weight,
-                'default_actual_weight': self.actual_weight,
-                'default_cutting_speed': self.cutting_speed,
-                'default_conveyor_speed': self.conveyor_speed,
-                'default_post_cutting_status': self.post_cutting_status,
+                'default_equipment_code': self.equipment_code,
+                'default_soup_temperature': self.soup_temperature,
+                'default_dipping_time': self.dipping_time,
+                'default_soup_rate': self.soup_rate,
+                'default_noodle_status': self.noodle_status,
+                
+                'default_cip': self.cip,
+                'default_cop': self.cop,
                 
                 'default_result': self.result,
                 'default_operator': self.operator.id,

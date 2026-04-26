@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="gmp_seasoning_dipping_wizard_view_form" model="ir.ui.view">
-            <field name="name">gmp.seasoning.dipping.wizard.form</field>
-            <field name="model">gmp.seasoning.dipping.wizard</field>
+        <record id="gmp_molding_adjustment_wizard_view_form" model="ir.ui.view">
+            <field name="name">gmp.molding.adjustment.wizard.form</field>
+            <field name="model">gmp.molding.adjustment.wizard</field>
             <field name="arch" type="xml">
                 <form string="Thông số">
                     <sheet>
@@ -31,13 +31,14 @@
                                 <field name="batch_code" placeholder="Nhập mã mẻ..."/>
                             </group>
                             <group>
-                                <field name="equipment_code"/>
-                                <field name="soup_temperature"/>
-                                <field name="dipping_time"/>
-                                <field name="soup_rate"/>
-                                <field name="noodle_status"/>
-                                <field name="cip"/>
-                                <field name="cop"/>
+                                <field name="adjustment_stick_diameter"/>
+                                <field name="adjustment_stick_length"/>
+                                <field name="distance_stick_mold"/>
+                                <field name="air_flow_rate"/>
+                                <field name="air_pressure"/>
+                                <field name="fan_speed"/>
+                                <field name="fan_wind_speed"/>
+                                <field name="sfp_status"/>
                             </group>
                         </group>
                         

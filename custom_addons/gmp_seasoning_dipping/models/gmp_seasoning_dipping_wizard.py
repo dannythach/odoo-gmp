@@ -7,7 +7,7 @@ class GmpSeasoningDippingWizard(models.TransientModel):
     header_id = fields.Many2one('gmp.seasoning.dipping', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
-    line_id = fields.Many2one('gmp.seasoning.dipping', string="Dòng đang sửa")
+    line_id = fields.Many2one('gmp.seasoning.dipping.line', string="Dòng đang sửa")
 
     # Many2many với relation riêng để tránh lỗi Table/Column
     valid_item_ids = fields.Many2many(
@@ -27,12 +27,31 @@ class GmpSeasoningDippingWizard(models.TransientModel):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
     
-    noodle_length = fields.Float(string="Chiều dài sợi mì (cm)")
-    standard_weight = fields.Float(string="KL/TL quy định (g)")
-    actual_weight = fields.Float(string="KL/ TL đo (g)")
-    cutting_speed = fields.Float(string="Tốc độ dao cắt (lần/p)")
-    conveyor_speed = fields.Float(string="Vận tốc băng tải")
-    post_cutting_status = fields.Char(string="Tình trạng vắt mì sau cắt định lượng")
+    equipment_code = fields.Char(string="Mã số thiết bị")
+    soup_temperature = fields.Float(string="Nhiệt độ nước lèo (C)")
+    dipping_time = fields.Float(string="Thời gian nhúng (s)")
+    soup_rate = fields.Float(string="Lưu lượng nước lèo (ml/vắt)")
+    noodle_status = fields.Char(string="Tình trạng vắt sau nhúng/phun")
+
+     # Tình trạng bảo quản sau cân - định lượng
+    cip = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng vệ sinh tại chỗ cho hệ thống kín",
+        default="Pass"
+    )
+
+    # Nhân diện sau cân - định lượng
+    cop = fields.Selection(
+        [
+            ("Pass", "C"),
+            ("Fail", "K"),
+        ],
+        string="Tình trạng tháo rời ra để vệ sinh (dao, khay, dụng cụ…)",
+        default="Pass"
+    )
 
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     operator = fields.Many2one(
@@ -52,12 +71,14 @@ class GmpSeasoningDippingWizard(models.TransientModel):
             'lot_code': self.lot_code,
             'batch_code': self.batch_code,
             
-            'noodle_length': self.noodle_length,
-            'standard_weight': self.standard_weight,
-            'actual_weight': self.actual_weight,
-            'cutting_speed': self.cutting_speed,
-            'conveyor_speed': self.conveyor_speed,
-            'post_cutting_status': self.post_cutting_status,
+            'equipment_code': self.equipment_code,
+            'soup_temperature': self.soup_temperature,
+            'dipping_time': self.dipping_time,
+            'soup_rate': self.soup_rate,
+            'noodle_status': self.noodle_status,
+            
+            'cip': self.cip,
+            'cop': self.cop,
             
             'result': self.result,
             'operator': self.operator.id,

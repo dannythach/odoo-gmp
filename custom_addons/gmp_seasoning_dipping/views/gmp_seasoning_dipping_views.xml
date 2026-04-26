@@ -30,8 +30,8 @@
                 <field name="fromts_display" widget="float_time" optional="hide"/>
                 <field name="tots_display" widget="float_time" optional="hide"/>
 
-                <field name="noodle_piece" optional="hide"/>
-                <field name="cutter_id" optional="hide"/>
+                <field name="dipping_tank_id" optional="hide"/>
+                <field name="broth_film" optional="hide"/>
 
                 <field name="productionplanname" optional="hide"/>
                 <field name="valid_item_ids" optional="hide"/>
@@ -71,8 +71,8 @@
                             <field name="fromts_display" widget="float_time"/>
                             <field name="tots_display" widget="float_time"/>
 
-                            <field name="noodle_piece"/>
-                            <field name="cutter_id"/>
+                            <field name="dipping_tank_id"/>
+                            <field name="broth_film"/>
 
                             <field name="productionplanname" readonly="1"/>
                             <field name="valid_item_ids" invisible="1"/>
@@ -119,12 +119,15 @@
                                     <field name="lot_code" readonly="1"/>
                                     <field name="batch_code" readonly="1"/>
 
-                                    <field name="noodle_length" readonly="1"/>
-                                    <field name="standard_weight" readonly="1"/>
-                                    <field name="actual_weight" readonly="1"/>
-                                    <field name="cutting_speed" readonly="1"/>
-                                    <field name="conveyor_speed" readonly="1"/>
-                                    <field name="post_cutting_status" readonly="1"/>
+                                    <field name="equipment_code" readonly="1"/>
+                                    <field name="soup_temperature" readonly="1"/>
+                                    <field name="dipping_time" readonly="1"/>
+                                    <field name="soup_rate" readonly="1"/>
+                                    <field name="noodle_status" readonly="1"/>
+
+                                    <field name="cip" readonly="1"/>
+                                    <field name="cop" readonly="1"/>
+
                                     
                                     <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1"/>
                                     <field name="operator" optional="hide" readonly="1"/>

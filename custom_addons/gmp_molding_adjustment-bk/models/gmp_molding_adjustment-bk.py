@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class gmpseasoningdipping(models.Model):
-    _name = "gmp.seasoning.dipping"
-    _description = "Nhúng nước lèo"
+class gmpmoldingadjustment(models.Model):
+    _name = "gmp.molding.adjustment"
+    _description = "Sửa khuôn"
     _order = "log_datetime desc"
     _rec_name = 'note'
 
@@ -12,7 +12,7 @@ class gmpseasoningdipping(models.Model):
         required=True
     )
 
-    # Thêm trường này vào model gmpseasoningdipping
+    # Thêm trường này vào model gmpmoldingadjustment
     log_date = fields.Date(
         string="Ngày ghi nhận",
         compute="_compute_log_date",
@@ -122,31 +122,17 @@ class gmpseasoningdipping(models.Model):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
 
-    equipment_code = fields.Char(string="Mã số thiết bị")
-    soup_temperature = fields.Float(string="Nhiệt độ nước lèo (C)")
-    dipping_time = fields.Float(string="Thời gian nhúng (s)")
-    soup_rate = fields.Float(string="Lưu lượng nước lèo (ml/vắt)")
-    noodle_status = fields.Float(string="Tình trạng vắt sau nhúng/phun")
+    mold_code = fields.Char(string="Loại khuôn (Mã số)")
+    adjustment_stick_diameter = fields.Float(string="Đường kính đũa (mm)")
+    adjustment_stick_length = fields.Float(string="Chiều dài đũa (mm)")
+    distance_stick_mold = fields.Float(string="K/C chỉnh đũa & khuôn (mm)")
+    air_flow_rate = fields.Float(string="Hơi khí nén (m³/p)")
+    air_pressure = fields.Float(string="Hơi khí nén (bar)")
+    fan_speed = fields.Float(string="Vận tốc cánh quạt (v/p)")
+    fan_wind_speed = fields.Float(string="Vận tốc gió (m/s)")
 
-    # Tình trạng bảo quản sau cân - định lượng
-    cip = fields.Selection(
-        [
-            ("C", "Đạt"),
-            ("K", "Không đạt"),
-        ],
-        string="Tình trạng vệ sinh tại chỗ cho hệ thống kín",
-        default="C"
-    )
-
-    # Nhân diện sau cân - định lượng
-    cop = fields.Selection(
-        [
-            ("C", "Đạt"),
-            ("K", "Không đạt"),
-        ],
-        string="Tình trạng tháo rời ra để vệ sinh (dao, khay, dụng cụ…)",
-        default="C"
-    )
+    # Tình trạng BTP sau sửa
+    sfp_status  = fields.Char(string="Tình trạng BTP sau sửa")
     
     result = fields.Selection(
         [
@@ -267,7 +253,7 @@ class gmpseasoningdipping(models.Model):
             'log_datetime': fields.Datetime.now(),
             # 'log_date': fields.Date.today(),
         })
-        return super(gmpseasoningdipping, self).copy(default)
+        return super(gmpmoldingadjustment, self).copy(default)
     
     def action_cron_duplicate_latest(self):
         """Hàm dành cho Scheduled Action để nhân bản bản ghi gần nhất"""

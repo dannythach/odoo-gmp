@@ -1,14 +1,14 @@
 {
-    "name": "Nhúng nước lèo",
+    "name": "Sửa khuôn",
     "version": "17.0.1.0.0",
     "category": "Manufacturing",
-    "summary": "Nhập liệu nhật ký sản xuất đơn giản giai đoạn nhúng nước lèo",
+    "summary": "Nhập liệu nhật ký sản xuất đơn giản giai đoạn sửa khuôn",
     "author": "Internal",
     "license": "LGPL-3",
     "depends": ["base", "base_module"],
     "data": [
         "security/ir.model.access.csv",
-        "views/gmp_seasoning_dipping_views.xml",
+        "views/gmp_molding_adjustment_views.xml",
     ],
     "installable": True,
     "application": True,

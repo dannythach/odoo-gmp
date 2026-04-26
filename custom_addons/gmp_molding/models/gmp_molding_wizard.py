@@ -1,24 +1,24 @@
 from odoo import models, fields, api
 
-class GmpSteammingWizard(models.TransientModel):
-    _name = "gmp.steamming.wizard"
+class GmpMoldingWizard(models.TransientModel):
+    _name = "gmp.molding.wizard"
     _description = "Chi tiết (Lines)"
 
-    header_id = fields.Many2one('gmp.steamming', string="Phiếu gốc")
+    header_id = fields.Many2one('gmp.molding', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
-    line_id = fields.Many2one('gmp.steamming.line', string="Dòng đang sửa")
+    line_id = fields.Many2one('gmp.molding.line', string="Dòng đang sửa")
 
     # Many2many với relation riêng để tránh lỗi Table/Column
     valid_item_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_steamming_wizard_item_rel', 
+        'gmp_molding_wizard_item_rel', 
         'wizard_id', 'item_id', 
         string='Sản phẩm hợp lệ'
     )
     valid_material_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_steamming_wizard_material_rel', 
+        'gmp_molding_wizard_material_rel', 
         'wizard_id', 'material_id', 
         string='Nguyên liệu hợp lệ'
     )
@@ -27,13 +27,13 @@ class GmpSteammingWizard(models.TransientModel):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
     
-    temperature = fields.Float(string="Nhiệt độ (C)")
-    steamming_time = fields.Float(string="Thời gian hấp (p/s)")
-    vapor_pressurer = fields.Float(string="Áp suất hơi (bar)")
-    chamber_pressuer = fields.Float(string="Áp suất buồng hấp (kgf/cm2)")
-    gelatinization = fields.Float(string="Độ hồ hóa tinh bột (%)")
-    moisture = fields.Float(string="Độ ẩm mì sau hấp (%)")
-    wip_status = fields.Char(string="Tình trạng bán thành phẩm")
+    noodle_cake_size = fields.Float(string="Kích thước vắt mì (mm)")
+    size_tolerance = fields.Float(string="Sai số kích thước +/-")
+    weight_per_cake = fields.Float(string="Trọng lượng mỗi vắt mì (g)")
+    weight_tolerance = fields.Float(string="Sai số trọng lượng +/-")
+
+    # Định hình/ tạo hình vắt mì trong khuôn
+    molding_status  = fields.Char(string="Định hình/ tạo hình vắt mì trong khuôn")
 
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     operator = fields.Many2one(
@@ -53,13 +53,11 @@ class GmpSteammingWizard(models.TransientModel):
             'lot_code': self.lot_code,
             'batch_code': self.batch_code,
             
-            'temperature': self.temperature,
-            'steamming_time': self.steamming_time,
-            'vapor_pressurer': self.vapor_pressurer,
-            'chamber_pressuer': self.chamber_pressuer,
-            'gelatinization': self.gelatinization,
-            'moisture': self.moisture,
-            'wip_status': self.wip_status,
+            'noodle_cake_size': self.noodle_cake_size,
+            'size_tolerance': self.size_tolerance,
+            'weight_per_cake': self.weight_per_cake,
+            'weight_tolerance': self.weight_tolerance,
+            'molding_status': self.molding_status,
             
             'result': self.result,
             'operator': self.operator.id,
@@ -71,11 +69,11 @@ class GmpSteammingWizard(models.TransientModel):
             self.line_id.write(vals)
         else:
             # NẾU KHÔNG CÓ LINE_ID: Tạo dòng mới
-            self.env['gmp.steamming.line'].create(vals)
+            self.env['gmp.molding.line'].create(vals)
             
         return {'type': 'ir.actions.act_window_close'}
     
-    def action_open_steamming_wizard(self):
+    def action_open_molding_wizard(self):
         self.ensure_one()
         # Nếu là bản ghi mới (chưa có ID thực), Odoo sẽ tự động lưu khi gọi action này 
         # thông qua button type="object"
@@ -83,7 +81,7 @@ class GmpSteammingWizard(models.TransientModel):
         return {
             'name': 'Thêm dòng nhanh (Mobile)',
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.steamming.wizard',
+            'res_model': 'gmp.molding.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
@@ -101,7 +99,7 @@ class GmpSteammingWizard(models.TransientModel):
         # 2. Reset lại wizard (mở lại form mới)
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.steamming.wizard',
+            'res_model': 'gmp.molding.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {

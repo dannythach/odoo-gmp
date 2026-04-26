@@ -7,7 +7,7 @@ class GmpDryingWizard(models.TransientModel):
     header_id = fields.Many2one('gmp.drying', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
-    line_id = fields.Many2one('gmp.drying', string="Dòng đang sửa")
+    line_id = fields.Many2one('gmp.drying.line', string="Dòng đang sửa")
 
     # Many2many với relation riêng để tránh lỗi Table/Column
     valid_item_ids = fields.Many2many(

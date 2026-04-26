@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Tree view -->
-    <record id="view_gmp_seasoning_dipping_tree" model="ir.ui.view">
-        <field name="name">gmp.seasoning.dipping.tree</field>
-        <field name="model">gmp.seasoning.dipping</field>
+    <record id="view_gmp_molding_adjustment_tree" model="ir.ui.view">
+        <field name="name">gmp.molding.adjustment.tree</field>
+        <field name="model">gmp.molding.adjustment</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
@@ -28,13 +28,15 @@
                 <field name="tots" optional="hide"/>
                 <field name="lot_code" optional="hide"/>
                 <field name="batch_code" optional="hide"/>
-                <field name="equipment_code" optional="hide"/>
-                <field name="soup_temperature" optional="hide"/>
-                <field name="dipping_time" optional="hide"/>
-                <field name="soup_rate" optional="hide"/>
-                <field name="noodle_status" optional="hide"/>
-                <field name="cip" optional="hide"/>
-                <field name="cop" optional="hide"/>           
+                <field name="mold_code" optional="hide"/>
+                <field name="adjustment_stick_diameter" optional="hide"/>
+                <field name="adjustment_stick_length" optional="hide"/>
+                <field name="distance_stick_mold" optional="hide"/>
+                <field name="air_flow_rate" optional="hide"/>
+                <field name="air_pressure" optional="hide"/>  
+                <field name="fan_speed" optional="hide"/>
+                <field name="fan_wind_speed" optional="hide"/>   
+                <field name="sfp_status" optional="hide"/>          
                 <field name="result"/>
                 <field name="operator"/>
                 <field name="note"/>
@@ -44,9 +46,9 @@
     </record>
 
     <!-- Form view -->
-    <record id="view_gmp_seasoning_dipping_form" model="ir.ui.view">
-        <field name="name">gmp.seasoning.dipping.form</field>
-        <field name="model">gmp.seasoning.dipping</field>
+    <record id="view_gmp_molding_adjustment_form" model="ir.ui.view">
+        <field name="name">gmp.molding.adjustment.form</field>
+        <field name="model">gmp.molding.adjustment</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -76,13 +78,15 @@
                     </group>
 
                     <group>   
-                        <field name="equipment_code"/>
-                        <field name="soup_temperature"/>
-                        <field name="dipping_time"/>
-                        <field name="soup_rate"/>
-                        <field name="noodle_status"/>
-                        <field name="cip"/>
-                        <field name="cop"/>         
+                        <field name="mold_code"/>
+                        <field name="adjustment_stick_diameter"/>
+                        <field name="adjustment_stick_length"/>
+                        <field name="distance_stick_mold"/>
+                        <field name="air_flow_rate"/>
+                        <field name="air_pressure"/>  
+                        <field name="fan_speed"/>
+                        <field name="fan_wind_speed"/>   
+                        <field name="sfp_status"/>        
                     </group>
 
                     <group>
@@ -97,19 +101,19 @@
     </record>
 
     <!-- Action -->
-    <record id="action_gmp_seasoning_dipping" model="ir.actions.act_window">
-        <field name="name">Nhúng nước lèo</field>
-        <field name="res_model">gmp.seasoning.dipping</field>
+    <record id="action_gmp_molding_adjustment" model="ir.actions.act_window">
+        <field name="name">Sửa khuôn</field>
+        <field name="res_model">gmp.molding.adjustment</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Menu -->
     <menuitem
-        id="menu_gmp_seasoning_dipping"
-        name="Nhúng nước lèo"
+        id="menu_gmp_molding_adjustment"
+        name="Sửa khuôn"
         parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_seasoning_dipping"
-        sequence="9"
+        action="action_gmp_molding_adjustment"
+        sequence="11"
     />
 
 </odoo>
