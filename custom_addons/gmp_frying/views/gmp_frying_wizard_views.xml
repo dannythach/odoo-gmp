@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <record id="gmp_drying_wizard_view_form" model="ir.ui.view">
-            <field name="name">gmp.drying.wizard.form</field>
-            <field name="model">gmp.drying.wizard</field>
+        <record id="gmp_frying_wizard_view_form" model="ir.ui.view">
+            <field name="name">gmp.frying.wizard.form</field>
+            <field name="model">gmp.frying.wizard</field>
             <field name="arch" type="xml">
                 <form string="Thông số">
                     <sheet>
@@ -31,12 +31,15 @@
                                 <field name="batch_code" placeholder="Nhập mã mẻ..."/>
                             </group>
                             <group>
-                                <field name="drying_time"/>
-                                <field name="blowing_speed"/>
-                                <field name="air_tempature"/>
-                                <field name="airflow_rate"/>
-                                <field name="equipment_status"/>
-                                <field name="wip_status"/>
+                                <field name="tempareture"/>
+                                <field name="frying_time"/>
+                                <field name="noodle_moisture"/>
+                                <field name="oil_indices"/>
+                                <field name="shortening_color"/>
+                                <field name="bht_level"/>
+                                <field name="lipid_level"/>
+                                <field name="sfp_status"/>
+                                <field name="machine_condition"/>
                             </group>
                         </group>
                         

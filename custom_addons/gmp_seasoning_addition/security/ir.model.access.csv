@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_seasoning_addition,gmp.seasoning.addition,model_gmp_seasoning_addition,base.group_user,1,1,1,1
+access_gmp_seasoning_addition_line,gmp.seasoning.addition.line,model_gmp_seasoning_addition_line,base.group_user,1,1,1,1
+access_gmp_seasoning_addition_wizard,gmp.seasoning.addition.wizard,model_gmp_seasoning_addition_wizard,base.group_user,1,1,1,1
+

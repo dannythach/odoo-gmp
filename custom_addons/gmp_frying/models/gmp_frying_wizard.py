@@ -1,24 +1,24 @@
 from odoo import models, fields, api
 
-class GmpDryingWizard(models.TransientModel):
-    _name = "gmp.drying.wizard"
+class GmpFryingWizard(models.TransientModel):
+    _name = "gmp.frying.wizard"
     _description = "Chi tiết (Lines)"
 
-    header_id = fields.Many2one('gmp.drying', string="Phiếu gốc")
+    header_id = fields.Many2one('gmp.frying', string="Phiếu gốc")
     
     # TRƯỜNG KỸ THUẬT: Để biết đang sửa dòng nào (nếu có)
-    line_id = fields.Many2one('gmp.drying.line', string="Dòng đang sửa")
+    line_id = fields.Many2one('gmp.frying.line', string="Dòng đang sửa")
 
     # Many2many với relation riêng để tránh lỗi Table/Column
     valid_item_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_drying_wizard_item_rel', 
+        'gmp_frying_wizard_item_rel', 
         'wizard_id', 'item_id', 
         string='Sản phẩm hợp lệ'
     )
     valid_material_ids = fields.Many2many(
         'gmp.oitm', 
-        'gmp_drying_wizard_material_rel', 
+        'gmp_frying_wizard_material_rel', 
         'wizard_id', 'material_id', 
         string='Nguyên liệu hợp lệ'
     )
@@ -27,12 +27,27 @@ class GmpDryingWizard(models.TransientModel):
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
     
-    drying_time = fields.Float(string="Thời gian quạt (p/s)")
-    blowing_speed = fields.Float(string="Tốc độ quạt/ Vận tốc thổi (m/p)")
-    air_tempature = fields.Float(string="Nhiệt độ không khí (C)")
-    airflow_rate = fields.Float(string="Lưu lượng không khí (m3/kg)")
-    equipment_status = fields.Char(string="Tình trạng thiết bị quạt")
-    wip_status = fields.Char(string="Tình trạng bề mặt bán thành phẩm")
+    tempareture = fields.Float(string="Nhiệt độ chiên (C)")
+    frying_time = fields.Float(string="Thời gian chiên (P/s)")
+    noodle_moisture = fields.Float(string="Độ ẩm vắt mì (%)")
+    oil_indices = fields.Float(string="Chỉ số dầu (AV/PV)")
+    shortening_color = fields.Selection(
+        [
+            ("New", "Mới"),
+            ("Old", "Cũ"),
+        ],
+        string="Màu dầu short",
+        default="New"
+    )
+
+    bht_level = fields.Float(string="Hàm lượng BHT")
+    lipid_level = fields.Float(string="Hàm lượng Lipid")
+
+    # Tình trạng BTP sau chiên
+    sfp_status = fields.Char(string="Tình trạng BTP")
+
+    # Tình trạng thiết bị
+    machine_condition = fields.Char(string="Tình trạng thiết bị")
 
     result = fields.Selection([("Pass", "Đạt"), ("Fail", "Không đạt")], string="Kết quả", default="Pass")
     operator = fields.Many2one(
@@ -52,12 +67,17 @@ class GmpDryingWizard(models.TransientModel):
             'lot_code': self.lot_code,
             'batch_code': self.batch_code,
             
-            'drying_time': self.drying_time,
-            'blowing_speed': self.blowing_speed,
-            'air_tempature': self.air_tempature,
-            'airflow_rate': self.airflow_rate,
-            'equipment_status': self.equipment_status,
-            'wip_status': self.wip_status,
+            'tempareture': self.tempareture,
+            'frying_time': self.frying_time,
+            'noodle_moisture': self.noodle_moisture,
+            'oil_indices': self.oil_indices,
+            'shortening_color': self.shortening_color,
+            
+            'bht_level': self.bht_level,
+            'lipid_level': self.lipid_level,
+            
+            'sfp_status': self.sfp_status,
+            'machine_condition': self.machine_condition,
             
             'result': self.result,
             'operator': self.operator.id,
@@ -69,11 +89,11 @@ class GmpDryingWizard(models.TransientModel):
             self.line_id.write(vals)
         else:
             # NẾU KHÔNG CÓ LINE_ID: Tạo dòng mới
-            self.env['gmp.drying.line'].create(vals)
+            self.env['gmp.frying.line'].create(vals)
             
         return {'type': 'ir.actions.act_window_close'}
     
-    def action_open_drying_wizard(self):
+    def action_open_frying_wizard(self):
         self.ensure_one()
         # Nếu là bản ghi mới (chưa có ID thực), Odoo sẽ tự động lưu khi gọi action này 
         # thông qua button type="object"
@@ -81,7 +101,7 @@ class GmpDryingWizard(models.TransientModel):
         return {
             'name': 'Thêm dòng nhanh (Mobile)',
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.steamming.wizard',
+            'res_model': 'gmp.frying.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {
@@ -99,7 +119,7 @@ class GmpDryingWizard(models.TransientModel):
         # 2. Reset lại wizard (mở lại form mới)
         return {
             'type': 'ir.actions.act_window',
-            'res_model': 'gmp.drying.wizard',
+            'res_model': 'gmp.frying.wizard',
             'view_mode': 'form',
             'target': 'new',
             'context': {

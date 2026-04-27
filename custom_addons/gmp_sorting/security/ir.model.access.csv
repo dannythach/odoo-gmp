@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_sorting,gmp.sorting,model_gmp_sorting,base.group_user,1,1,1,1
+access_gmp_sorting_line,gmp.sorting.line,model_gmp_sorting_line,base.group_user,1,1,1,1
+access_gmp_sorting_wizard,gmp.sorting.wizard,model_gmp_sorting_wizard,base.group_user,1,1,1,1
+

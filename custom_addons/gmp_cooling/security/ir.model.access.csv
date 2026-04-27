@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_cooling,gmp.cooling,model_gmp_cooling,base.group_user,1,1,1,1
+access_gmp_cooling_line,gmp.cooling.line,model_gmp_cooling_line,base.group_user,1,1,1,1
+access_gmp_cooling_wizard,gmp.cooling.wizard,model_gmp_cooling_wizard,base.group_user,1,1,1,1
+

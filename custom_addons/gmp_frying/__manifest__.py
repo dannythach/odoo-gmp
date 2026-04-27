@@ -8,6 +8,7 @@
     "depends": ["base", "base_module"],
     "data": [
         "security/ir.model.access.csv",
+        'views/gmp_frying_wizard_views.xml',
         "views/gmp_frying_views.xml",
     ],
     "installable": True,
