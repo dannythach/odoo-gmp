@@ -1,123 +1,153 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Tree view -->
-    <record id="view_gmp_product_packaging_tree" model="ir.ui.view">
-        <field name="name">gmp.product.packaging.tree</field>
-        <field name="model">gmp.product.packaging</field>
-        <field name="arch" type="xml">
-            <tree>
-                <field name="log_datetime"/>
-                <field name="log_date" optional="hide"/> 
-                <field name="productionplan_id" optional="hide"/>
-                <field name="productionplancode"/>
-                <field name="productionplanname" optional="hide"/>
-                <field name="productionplanfactory" optional="hide"/>
-                <field name="line_id" optional="hide"/>
-                <field name="linecode" optional="hide"/>
-                <field name="linename" optional="hide"/>
-                <field name="shift_id" optional="hide"/>
-                <field name="shiftcode" optional="hide"/>
-                <field name="shiftname" optional="hide"/>
-                <field name="shift_id" optional="hide"/>
-                <field name="shiftcode" optional="hide"/>
-                <field name="shiftname" optional="hide"/>
-                <field name="item_id" optional="hide"/>
-                <field name="itemcode" optional="hide"/>
-                <field name="itemname" optional="hide"/>
-                <field name="fromts" optional="hide"/>
-                <field name="tots" optional="hide"/>
-                <field name="lot_code" optional="hide"/>
-                <field name="batch_code" optional="hide"/>
-
-                <field name="machine_id" optional="hide"/>
-                <field name="packaging_type" optional="hide"/>
-                <field name="cutter_speed" optional="hide"/>
-                <field name="temperature_at_ends" optional="hide"/>
-                <field name="temperature_for_middle" optional="hide"/>
-                <field name="total_products" optional="hide"/>  
-                <field name="inspected_products" optional="hide"/> 
-                <field name="passed_products" optional="hide"/>
-                <field name="defective_products" optional="hide"/>  
-                <field name="defect_types" optional="hide"/>
-
-                <field name="result"/>
-                <field name="operator"/>
-                <field name="note"/>
-                <field name="allowed_item_ids" optional="hide"/>
-            </tree>
-        </field>
-    </record>
-
-    <!-- Form view -->
-    <record id="view_gmp_product_packaging_form" model="ir.ui.view">
-        <field name="name">gmp.product.packaging.form</field>
-        <field name="model">gmp.product.packaging</field>
-        <field name="arch" type="xml">
-            <form>
-                <sheet>
-                    <group>
-                        <field name="log_datetime"/>
-                        <field name="log_date" invisible="1"/> 
-                        <field name="productionplan_id" 
-                            context="{'search_default_u_docdate': log_date}"
-                            domain="[('u_docdate', '=', log_date)]"
-                            options="{'no_create': True, 'no_open': True}"/>
-                        <field name="productionplancode"/>  
-                        <field name="productionplanname"/>
-                        <field name="productionplanfactory"/>  
-                        <field name="line_id"/>
-                        <field name="linecode"/>
-                        <field name="linename"/>
-                        <field name="shift_id"/>
-                        <field name="shiftcode"/>
-                        <field name="shiftname"/>
-                        <field name="item_id"/>
-                        <field name="itemcode"/>
-                        <field name="itemname"/>
-                        <field name="fromts"/>
-                        <field name="tots"/>                                            
-                        <field name="lot_code"/>
-                        <field name="batch_code"/>
-                    </group>
-
-                    <group>   
-                        <field name="machine_id"/>
-                        <field name="packaging_type"/>
-                        <field name="cutter_speed"/>
-                        <field name="temperature_at_ends"/>
-                        <field name="temperature_for_middle"/>
-                        <field name="total_products"/>  
-                        <field name="inspected_products"/> 
-                        <field name="passed_products"/>
-                        <field name="defective_products"/>  
-                        <field name="defect_types"/>            
-                    </group>
-
-                    <group>
-                        <field name="result"/>
-                        <field name="operator"/>
-                        <field name="note"/>
-                        <field name="allowed_item_ids" invisible="1"/>
-                    </group>
-                </sheet>
-            </form>
-        </field>
-    </record>
-
-    <!-- Action -->
     <record id="action_gmp_product_packaging" model="ir.actions.act_window">
         <field name="name">Bao gói sản phẩm</field>
         <field name="res_model">gmp.product.packaging</field>
         <field name="view_mode">tree,form</field>
     </record>
 
-    <!-- Menu -->
-    <menuitem
-        id="menu_gmp_product_packaging"
-        name="Bao gói sản phẩm"
-        parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_product_packaging"
-        sequence="16"
-    />
+    <menuitem id="menu_gmp_product_packaging" name="Bao gói sản phẩm" 
+              parent="gmp_weighing_monitoring.menu_noodle_production_log_root" action="action_gmp_product_packaging" sequence="16"/>
 
+    <record id="view_gmp_product_packaging_tree" model="ir.ui.view">
+        <field name="name">gmp.product.packaging.tree</field>
+        <field name="model">gmp.product.packaging</field>
+        <field name="arch" type="xml">
+            <tree string="Danh sách">
+                <field name="log_date"/>
+                <field name="productionplan_id"/>
+                <field name="productionplancode"/>
+                <field name="productionplanfactory"/>
+                <field name="line_id"/>
+                <field name="linecode"/>
+                <field name="area"/>
+                <field name="shift_id" optional="hide"/>
+                <field name="shiftname" />
+                <field name="group" optional="hide"/>
+                <field name="item_id"/>
+                <field name="itemcode" optional="hide"/>
+                <field name="itemname" optional="hide"/>
+                <field name="fromts_display" widget="float_time" optional="hide"/>
+                <field name="tots_display" widget="float_time" optional="hide"/>
+
+                <field name="machine_id" optional="hide"/>
+
+                <field name="productionplanname" optional="hide"/>
+                <field name="valid_item_ids" optional="hide"/>
+                <field name="valid_material_ids" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_gmp_product_packaging_form" model="ir.ui.view">
+        <field name="name">gmp.product.packaging.form</field>
+        <field name="model">gmp.product.packaging</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    
+                </header>
+                <sheet>
+                    <group>
+                        <group name="left_header">
+                            <field name="log_date" string="Ngày ghi nhận"/>
+                            <field name="productionplan_id" 
+                                   options="{'no_create': True}"
+                                   domain="[('u_docdate', '=', log_date)]"
+                                   placeholder="Chọn kế hoạch theo ngày..."/>
+                            <field name="productionplancode" readonly="1"/>
+                            <field name="productionplanfactory" readonly="1"/>
+                            <field name="line_id" options="{'no_create': True}"/>
+                            <field name="area"/>
+                            <field name="shift_id" options="{'no_create': True}"/>
+                            <field name="group"/>
+                        </group>
+                        
+                        <group name="right_header">
+                            <field name="item_id" domain="[('id', 'in', valid_item_ids)]"/>
+                            <field name="itemcode" invisible="1"/>
+                            <field name="itemname" invisible="1"/>
+                            <field name="fromts_display" widget="float_time"/>
+                            <field name="tots_display" widget="float_time"/>
+
+                            <field name="machine_id"/>
+
+                            <field name="productionplanname" readonly="1"/>
+                            <field name="valid_item_ids" invisible="1"/>
+                            <field name="valid_material_ids" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Chi tiết" name="product_packaging_details">
+                            <div class="d-flex align-items-center gap-2 mb-2 p-2 border rounded bg-light">
+                                <button name="action_open_product_packaging_wizard"
+                                            type="object"
+                                            icon="fa-plus"
+                                            class="btn btn-primary"
+                                            style="
+                                                position: fixed;
+                                                bottom: 30px;
+                                                right: 30px;
+                                                border-radius: 50%;
+                                                width: 50px;
+                                                height: 50px;
+                                                z-index: 1000;
+                                            "/>
+                                
+                                <span class="text-muted">
+                                    Thêm dòng
+                                </span>
+                            </div>
+                            <!-- Danh sách dòng -->
+                            <field name="line_ids">
+                                <tree delete="0" create="0" editable="bottom"> 
+                                    <button name="action_edit_line" 
+                                            type="object" 
+                                            icon="fa-pencil" 
+                                            class="btn-secondary"/>
+                                    
+                                    <field name="log_datetime" 
+                                            string="Thời gian"
+                                            widget="datetime"
+                                            options="{'format': 'dd/MM/yyyy HH:mm:ss'}" 
+                                            optional="show"
+                                            readonly="1"/>
+                                    
+                                    <field name="lot_code" readonly="1"/>
+                                    <field name="batch_code" readonly="1"/>
+
+                                    <field name="packaging_type" readonly="1"/>
+                                    <field name="cutter_speed" readonly="1"/>
+                                    <field name="temperature_at_ends" readonly="1"/>
+                                    <field name="temperature_for_middle" readonly="1"/>
+                                    <field name="total_products" readonly="1"/>
+                                    <field name="inspected_products" readonly="1"/>
+                                    <field name="passed_products" readonly="1"/>
+                                    <field name="defective_products" readonly="1"/>
+                                    <field name="defect_types" readonly="1"/>
+                                    
+                                    <field name="result" decoration-success="result == 'Pass'" decoration-danger="result == 'Fail'" readonly="1"/>
+                                    <field name="operator" optional="hide" readonly="1"/>
+                                    <field name="note" optional="hide" readonly="1"/>
+                                            
+                                    <!-- <button name="unlink" 
+                                            type="object" 
+                                            icon="fa-trash text-danger" 
+                                            confirm="Bạn có chắc chắn muốn xóa dòng này?"/> -->
+                                </tree>
+                            </field>
+                        </page>
+                        
+                        <page string="Thông tin khác" name="other_info">
+                            <group>
+                                <field name="linecode" readonly="1"/>
+                                <field name="shiftcode" readonly="1"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
 </odoo>

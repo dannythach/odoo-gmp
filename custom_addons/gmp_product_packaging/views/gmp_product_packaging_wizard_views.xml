@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="gmp_product_packaging_wizard_view_form" model="ir.ui.view">
+            <field name="name">gmp.product.packaging.wizard.form</field>
+            <field name="model">gmp.product.packaging.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Thông số">
+                    <sheet>
+                        <!-- <field name="valid_item_ids" invisible="1"/> -->
+                        <field name="valid_material_ids" invisible="1"/>
+                        <field name="header_id" invisible="1"/>
+                        <field name="line_id" invisible="1"/>
+
+                        <div class="oe_title" invisible="not line_id">
+                            <span class="badge rounded-pill text-bg-info" style="font-size: 14px;">Chế độ: Chỉnh sửa dòng cũ</span>
+                        </div>
+                        <div class="oe_title" invisible="line_id">
+                            <span class="badge rounded-pill text-bg-success" style="font-size: 14px;">Chế độ: Thêm dòng mới</span>
+                        </div>
+
+                        <group>
+                            <group string="Thông tin sản phẩm">
+                                <field name="log_datetime"/>
+                            </group>
+                        </group>
+
+                        <group string="Thông tin ghi nhận">
+                            <group>
+                                <field name="lot_code" placeholder="Nhập mã lô..."/>
+                                <field name="batch_code" placeholder="Nhập mã mẻ..."/>
+                            </group>
+                            <group>
+                                <field name="packaging_type"/>
+                                <field name="cutter_speed"/>
+                                <field name="temperature_at_ends"/>
+                                <field name="temperature_for_middle"/>
+                                <field name="total_products"/>
+                                <field name="inspected_products"/>
+                                <field name="passed_products"/>
+                                <field name="defective_products"/>
+                                <field name="defect_types"/>
+                            </group>
+                        </group>
+                        
+                        <group string="Xác nhận">
+                            <field name="result" widget="radio" options="{'horizontal': true}"/>
+                            <field name="operator"/>
+                            <field name="note" placeholder="Ghi chú chi tiết nếu có..."/>
+                        </group>
+                    </sheet>
+                    <footer>
+                        
+                        <button string="Lưu &amp; Đóng" name="action_confirm" type="object" class="btn-primary" data-hotkey="q"/>
+                        <button string="Lưu &amp; Tạo mới" name="action_confirm_and_new" type="object" class="btn-primary"/>
+                        <button string="Đóng" class="btn-secondary" special="cancel" data-hotkey="z"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+    </data>
+</odoo>
