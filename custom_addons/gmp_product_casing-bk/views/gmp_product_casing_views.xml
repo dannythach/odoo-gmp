@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <!-- Tree view -->
-    <record id="view_gmp_product_packaging_tree" model="ir.ui.view">
-        <field name="name">gmp.product.packaging.tree</field>
-        <field name="model">gmp.product.packaging</field>
+    <record id="view_gmp_product_casing_tree" model="ir.ui.view">
+        <field name="name">gmp.product.casing.tree</field>
+        <field name="model">gmp.product.casing</field>
         <field name="arch" type="xml">
             <tree>
                 <field name="log_datetime"/>
@@ -26,19 +26,14 @@
                 <field name="itemname" optional="hide"/>
                 <field name="fromts" optional="hide"/>
                 <field name="tots" optional="hide"/>
-                <field name="lot_code" optional="hide"/>
-                <field name="batch_code" optional="hide"/>
 
                 <field name="machine_id" optional="hide"/>
-                <field name="packaging_type" optional="hide"/>
-                <field name="cutter_speed" optional="hide"/>
-                <field name="temperature_at_ends" optional="hide"/>
-                <field name="temperature_for_middle" optional="hide"/>
-                <field name="total_products" optional="hide"/>  
-                <field name="inspected_products" optional="hide"/> 
-                <field name="passed_products" optional="hide"/>
-                <field name="defective_products" optional="hide"/>  
-                <field name="defect_types" optional="hide"/>
+                <field name="specifications" optional="hide"/>
+                <field name="quantity_case" optional="hide"/>
+                <field name="inspected_cases" optional="hide"/>
+                <field name="passed_cases" optional="hide"/>
+                <field name="rejected_cases" optional="hide"/>
+                <field name="defect_type" optional="hide"/>
 
                 <field name="result"/>
                 <field name="operator"/>
@@ -49,9 +44,9 @@
     </record>
 
     <!-- Form view -->
-    <record id="view_gmp_product_packaging_form" model="ir.ui.view">
-        <field name="name">gmp.product.packaging.form</field>
-        <field name="model">gmp.product.packaging</field>
+    <record id="view_gmp_product_casing_form" model="ir.ui.view">
+        <field name="name">gmp.product.casing.form</field>
+        <field name="model">gmp.product.casing</field>
         <field name="arch" type="xml">
             <form>
                 <sheet>
@@ -76,21 +71,16 @@
                         <field name="itemname"/>
                         <field name="fromts"/>
                         <field name="tots"/>                                            
-                        <field name="lot_code"/>
-                        <field name="batch_code"/>
                     </group>
 
                     <group>   
                         <field name="machine_id"/>
-                        <field name="packaging_type"/>
-                        <field name="cutter_speed"/>
-                        <field name="temperature_at_ends"/>
-                        <field name="temperature_for_middle"/>
-                        <field name="total_products"/>  
-                        <field name="inspected_products"/> 
-                        <field name="passed_products"/>
-                        <field name="defective_products"/>  
-                        <field name="defect_types"/>            
+                        <field name="specifications"/>
+                        <field name="quantity_case"/>
+                        <field name="inspected_cases"/>
+                        <field name="passed_cases"/>
+                        <field name="rejected_cases"/>
+                        <field name="defect_type"/>           
                     </group>
 
                     <group>
@@ -105,19 +95,19 @@
     </record>
 
     <!-- Action -->
-    <record id="action_gmp_product_packaging" model="ir.actions.act_window">
-        <field name="name">Bao gói sản phẩm</field>
-        <field name="res_model">gmp.product.packaging</field>
+    <record id="action_gmp_product_casing" model="ir.actions.act_window">
+        <field name="name">Đóng thùng sản phẩm</field>
+        <field name="res_model">gmp.product.casing</field>
         <field name="view_mode">tree,form</field>
     </record>
 
     <!-- Menu -->
     <menuitem
-        id="menu_gmp_product_packaging"
-        name="Bao gói sản phẩm"
+        id="menu_gmp_product_casing"
+        name="Đóng thùng sản phẩm"
         parent="gmp_weighing_monitoring.menu_noodle_production_log_root"
-        action="action_gmp_product_packaging"
-        sequence="16"
+        action="action_gmp_product_casing"
+        sequence="17"
     />
 
 </odoo>

@@ -1,2 +1,5 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_gmp_product_casing,gmp.product.casing,model_gmp_product_casing,base.group_user,1,1,1,1
+access_gmp_product_casing_line,gmp.product.casing.line,model_gmp_product_casing_line,base.group_user,1,1,1,1
+access_gmp_product_casing_wizard,gmp.product.casing.wizard,model_gmp_product_casing_wizard,base.group_user,1,1,1,1
+

@@ -26,16 +26,6 @@ class GmpProductPackagingWizard(models.TransientModel):
     log_datetime = fields.Datetime(string="Thời gian", default=fields.Datetime.now, required=True)   
     lot_code = fields.Char(string="Mã lô SX")
     batch_code = fields.Char(string="Mã mẻ")
-    
-    seasoning_type = fields.Many2one('base.seasoning.type', string="Loại gói gia vị", required=True)
-    seasoning_weight = fields.Selection(
-        [
-            ("Pass", "Đạt"),
-            ("Fail", "Không đạt"),
-        ],
-        string="Trọng lượng gói gia vị",
-        default="Pass"
-    )
 
     packaging_type = fields.Char(string="Loại bao bì (Đúng loại, sạch, còn hạn, Có CO/DoC)")
     cutter_speed = fields.Float(string="Tốc độ dao cắt (nhát/phút)")
@@ -71,9 +61,6 @@ class GmpProductPackagingWizard(models.TransientModel):
             'log_datetime': self.log_datetime,
             'lot_code': self.lot_code,
             'batch_code': self.batch_code,
-            
-            'seasoning_type': self.seasoning_type.id,
-            'seasoning_weight': self.seasoning_weight,
             
             'packaging_type': self.packaging_type,
             'cutter_speed': self.cutter_speed,

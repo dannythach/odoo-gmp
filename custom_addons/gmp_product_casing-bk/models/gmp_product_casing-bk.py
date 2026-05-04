@@ -1,8 +1,8 @@
 from odoo import models, fields, api
 
-class gmpproductpackaging(models.Model):
-    _name = "gmp.product.packaging"
-    _description = "Phân loại"
+class gmpproductcasing(models.Model):
+    _name = "gmp.product.casing"
+    _description = "Đóng thùng sản phẩm"
     _order = "log_datetime desc"
     _rec_name = 'note'
 
@@ -123,23 +123,13 @@ class gmpproductpackaging(models.Model):
     batch_code = fields.Char(string="Mã mẻ")
 
     machine_id = fields.Char(string="Thiết bị bao gói (Mã số)")
-    packaging_type = fields.Char(string="Loại bao bì (Đúng loại, sạch, còn hạn, Có CO/DoC)")
-    cutter_speed = fields.Float(string="Tốc độ dao cắt (nhát/phút)")
-    temperature_at_ends = fields.Float(string="Nhiệt độ điện trở 2 đầu gói mì (C)")
-    temperature_for_middle = fields.Float(string="Nhiệt độ điện trở dập phần bụng gói mì (C)")
-    total_products = fields.Float(string="Tổng số sản phẩm")
-    inspected_products = fields.Float(string="Tổng số sản phẩm kiểm")
-    passed_products = fields.Float(string="Tổng số sản phẩm đạt")
-    defective_products = fields.Float(string="Tổng số sản phẩm lỗi")
-    defect_types = fields.Selection(
-        [
-            ("PR", "Sản phẩm"),
-            ("MA", "Thiết bị"),
-        ],
-        string="Loại lỗi liên quan",
-        default="PR"
-    )
-    
+    specifications = fields.Char(string="Quy cách (gói/thùng)")
+    quantity_case = fields.Float(string="Tổng số thùng")
+    inspected_cases = fields.Float(string="Số thùng kiểm")
+    passed_cases = fields.Float(string="Số thùng đạt")
+    rejected_cases = fields.Float(string="Số thùng không đạt")
+    defect_type = fields.Char(string="Loại lỗi")
+        
     result = fields.Selection(
         [
             ("Pass", "Đạt"),
@@ -259,7 +249,7 @@ class gmpproductpackaging(models.Model):
             'log_datetime': fields.Datetime.now(),
             # 'log_date': fields.Date.today(),
         })
-        return super(gmpproductpackaging, self).copy(default)
+        return super(gmpproductcasing).copy(default)
     
     def action_cron_duplicate_latest(self):
         """Hàm dành cho Scheduled Action để nhân bản bản ghi gần nhất"""

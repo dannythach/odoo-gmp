@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_excel_report_config,excel.report.config,model_excel_report_config,base.group_user,1,1,1,1
+access_excel_report_param,excel.report.param,model_excel_report_param,base.group_user,1,1,1,1
+access_excel_report_column,excel.report.column,model_excel_report_column,base.group_user,1,1,1,1
+
+
+

@@ -9,3 +9,4 @@ access_gmp_ouom_user,gmp.ouom,model_gmp_ouom,base.group_user,1,1,1,1
 access_base_material_type,base.material.type,model_base_material_type,base.group_user,1,1,1,1
 access_base_equipment_type,base.equipment.type,model_base_equipment_type,base.group_user,1,1,1,1
 access_base_seasoning_type,base.seasoning.type,model_base_seasoning_type,base.group_user,1,1,1,1
+access_base_machine_type,base.machine.type,model_base_machine_type,base.group_user,1,1,1,1

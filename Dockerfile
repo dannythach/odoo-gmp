@@ -13,6 +13,8 @@ USER root
 RUN pip3 install --no-cache-dir \
     xlsxwriter \
     docxtpl \
+    xlsxtpl \
+    openpyxl \
     docxcompose \
     htmldocx
 

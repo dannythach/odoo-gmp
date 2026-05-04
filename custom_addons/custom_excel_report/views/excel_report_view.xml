@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- 1. View Tree -->
+    <record id="view_excel_report_config_tree" model="ir.ui.view">
+        <field name="name">excel.report.config.tree</field>
+        <field name="model">excel.report.config</field>
+        <field name="arch" type="xml">
+            <tree string="Cấu hình Báo cáo Excel">
+                <field name="name"/>
+                <field name="store_procedure_name"/>
+                <field name="start_row"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- 2. View Form -->
+    <record id="view_excel_report_config_form" model="ir.ui.view">
+        <field name="name">excel.report.config.form</field>
+        <field name="model">excel.report.config</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_export_report" string="Xuất Báo Cáo" type="object" class="btn-primary"/>
+                    <button name="action_get_columns" string="Cập nhật danh sách cột SQL" type="object" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" string="Tên báo cáo"/>
+                        <h1><field name="name" placeholder="Ví dụ: Báo cáo năng suất..."/></h1>
+                    </div>
+                    <group>
+                        <group string="Cấu hình SQL &amp; Hiển thị">
+                            <field name="store_procedure_name"/>
+                            <field name="start_row"/>
+                            <field name="group_by_column_ids" 
+                                   widget="many2many_tags" 
+                                   options="{'no_create': True}"
+                                   domain="[('config_id', '=', id)]"/>
+                            <field name="sum_column_ids" 
+                                   widget="many2many_tags" 
+                                   options="{'no_create': True}"
+                                   domain="[('config_id', '=', id)]"/>
+                        </group>
+                        <group string="File Excel mẫu">
+                            <field name="template_file" filename="file_name"/>
+                            <field name="file_name" invisible="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Tham số báo cáo" name="parameters">
+                            <field name="param_ids">
+                                <tree editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="display_name_param"/> 
+                                    <field name="name"/>
+                                    <field name="param_type"/>
+                                    <field name="value_date" invisible="param_type != 'date'"/>
+                                    <field name="value_char" invisible="param_type != 'char'"/>
+                                    <field name="value_integer" invisible="param_type != 'integer'"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cấu trúc Cột SQL" name="sql_columns">
+                            <field name="sql_column_ids">
+                                <tree create="false" delete="false">
+                                    <field name="name"/>
+                                </tree>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- 3. Action -->
+    <record id="action_excel_report_config" model="ir.actions.act_window">
+        <field name="name">Cấu hình Báo cáo Excel</field>
+        <field name="res_model">excel.report.config</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!-- 4. Menuitems -->
+    <!-- Root Menu: Hiển thị trên thanh ngang -->
+    <menuitem id="menu_excel_report_root" 
+              name="Excel Reports" 
+              sequence="10" 
+              groups="base.group_user"/>
+
+    <!-- Sub Menu: Hiển thị trong danh sách thả xuống như trong ảnh image_aa09de.png -->
+    <menuitem id="menu_excel_report_config" 
+              name="Báo cáo SQL" 
+              parent="menu_excel_report_root" 
+              action="action_excel_report_config"
+              sequence="1"/>
+</odoo>

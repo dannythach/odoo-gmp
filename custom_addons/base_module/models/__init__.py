@@ -8,4 +8,6 @@ from . import gmp_ouom
 from . import base_material_type
 from . import base_equipment_type
 from . import base_seasoning_type
+from . import base_machine_type
+
 
